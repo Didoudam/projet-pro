@@ -1,0 +1,198 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String   @id @default(cuid())
+  name          String
+  email         String
+  emailVerified Boolean
+  image         String?
+  firstName     String?
+  lastName      String?
+  isRoot        Boolean?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  session            Session[]
+  account            Account[]
+  relationAsUser1    Relation[]     @relation("UserAsUser1")
+  relationAsUser2    Relation[]     @relation("UserAsUser2")
+  ProfileShowAsUser1 ProfileShow[]  @relation("UserAsUser1")
+  ProfileShowAsUser2 ProfileShow[]  @relation("UserAsUser2")
+  skill              Skill[]
+  companyAdmin       CompanyAdmin[]
+  post               Post[]
+  Comment            Comment[]
+  formation          formation[]
+  Experience         Experience[]
+}
+
+model Company {
+  id          String   @id @default(cuid())
+  name        String
+  activity    String?
+  image       String?
+  description String?
+  createdAt   DateTime @default(now())
+
+  companyAdmin CompanyAdmin[]
+  post         Post[]
+  Comment      Comment[]
+  formation    formation[]
+  Experience   Experience[]
+}
+
+model formation {
+  id          String    @id @default(cuid())
+  name        String
+  startDate   DateTime
+  endDate     DateTime?
+  description String?
+  companyId   String?
+  userId      String
+  company     Company?  @relation(fields: [companyId], references: [id])
+  user        User      @relation(fields: [userId], references: [id])
+}
+
+model Experience {
+  id          String    @id @default(cuid())
+  name        String
+  startDate   DateTime
+  endDate     DateTime?
+  description String?
+  companyId   String?
+  userId      String
+  company     Company?  @relation(fields: [companyId], references: [id])
+  user        User      @relation(fields: [userId], references: [id])
+}
+
+model Post {
+  id         String   @id @default(cuid())
+  createdAt  DateTime @default(now())
+  content    String
+  reactionId String?
+  userId     String?
+  companyId  String?
+  votes      Int?     @default(0)
+  company    Company? @relation(fields: [companyId], references: [id])
+  user       User?    @relation(fields: [userId], references: [id])
+
+  media   Media[]
+  Comment Comment[]
+}
+
+model Media {
+  id          String  @id @default(cuid())
+  nom         String?
+  url         String
+  altText     String?
+  description String?
+  type        String?
+  postId      String
+  post        Post    @relation(fields: [postId], references: [id])
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String
+  createdAt DateTime @default(now())
+  votes     Int?     @default(0)
+  userId    String?
+  companyId String?
+  postId    String?
+  commentId String?
+  company   Company? @relation(fields: [companyId], references: [id])
+  user      User?    @relation(fields: [userId], references: [id])
+  post      Post?    @relation(fields: [postId], references: [id])
+  comment   Comment? @relation("CommentAsParentComment", fields: [commentId], references: [id])
+
+  replies Comment[] @relation("CommentAsParentComment")
+}
+
+model CompanyAdmin {
+  id        String  @id @default(cuid())
+  role      String
+  companyId String
+  userId    String
+  company   Company @relation(fields: [companyId], references: [id])
+  user      User    @relation(fields: [userId], references: [id])
+}
+
+model Skill {
+  id     String @id @default(cuid())
+  name   String
+  level  Int
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Relation {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  status    Boolean
+  idUser1   String
+  idUser2   String
+  user1     User     @relation("UserAsUser1", fields: [idUser1], references: [id], onDelete: Cascade)
+  user2     User     @relation("UserAsUser2", fields: [idUser2], references: [id], onDelete: Cascade)
+}
+
+model ProfileShow {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+  idUser1   String
+  idUser2   String
+  user1     User     @relation("UserAsUser1", fields: [idUser1], references: [id], onDelete: Cascade)
+  user2     User     @relation("UserAsUser2", fields: [idUser2], references: [id], onDelete: Cascade)
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String
+  espiresAt DateTime
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Account {
+  id                   String    @id @default(cuid())
+  userId               String
+  accountId            String
+  providerId           String
+  accessToken          String?
+  refreshToken         String?
+  accessTokenExpireAt  DateTime?
+  refreshTokenExpireAt DateTime?
+  scope                String?
+  idToken              String?
+  password             String?
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+  user                 User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Verification {
+  id         String   @id @default(cuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime
+  updatedAt  DateTime
+}
