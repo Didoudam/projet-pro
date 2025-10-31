@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { userCreateSchema } from "@/lib/schemas";
 import { getAuthenticatedUser } from "@/lib/auth-helpers";
+import { companyCreateSchema } from "@/lib/schemas/companies";
 
-// GET /api/users
+// GET /api/company
 export async function GET(request: NextRequest) {
     //Vérifier que l'user est identifié ici
     const auth = await getAuthenticatedUser(request);
@@ -11,21 +11,17 @@ export async function GET(request: NextRequest) {
         return auth;
     }
 
-    const users = await prisma.user.findMany({
+    const companies = await prisma.company.findMany({
         select: {
             id: true,
             name: true,
-            email: true,
         },
-        // where: {
-        // 	emailVerified: true,
-        // },
     });
 
-    return NextResponse.json(users);
+    return NextResponse.json(companies);
 }
 
-// POST /api/users
+// POST /api/companies
 export async function POST(request: NextRequest) {
     try {
 
@@ -34,31 +30,27 @@ export async function POST(request: NextRequest) {
         const body = await request.json();
 
         // Validation des données
-        const validatedData = await userCreateSchema.validate(body, {
+        const validatedData = await companyCreateSchema.validate(body, {
             stripUnknown: true,
         });
 
-        //verification si l'utilisateur existe deja
-        const user = await prisma.user.findFirst({
+        //verification si l'entreprise existe deja
+        const company = await prisma.company.findFirst({
             select: {
                 id: true,
             },
-            where: {
-                email: validatedData.email,
-            },
         });
 
-        if (user) {
+        if (company) {
             return NextResponse.json(
-                { message: "Utilisateur déjà existant" },
+                { message: "Entreprise déjà existante" },
                 { status: 409 }
             );
         }
 
-        const newUser = await prisma.user.create({
+        const newUser = await prisma.company.create({
             data: {
                 ...validatedData,
-                emailVerified: false,
                 writer: {
                     create: {},
                 },

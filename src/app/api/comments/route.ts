@@ -1,15 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { commentCreateSchema } from "@/lib/schemas";
-
+import { getAuthenticatedUser } from "@/lib/auth-helpers";
 
 // POST /api/commentaire           Création de commentaire
 export async function POST(request: NextRequest) {
     try {
         //Vérifier que l'user est identifié ici
-        // if (!session?.session?.activeOrganizationId) {
-        //     return NextResponse.json({ message: "Non autorisé" }, { status: 401 });
-        // }
+        const auth = await getAuthenticatedUser(request);
+        if (auth instanceof NextResponse) {
+            return auth;
+        }
 
         const body = await request.json();
 
@@ -26,12 +27,16 @@ export async function POST(request: NextRequest) {
         });
 
         if (comment) {
-            return NextResponse.json({ message: "commentaire déjà existant" }, { status: 404 });
+            return NextResponse.json(
+                { message: "commentaire déjà existant" },
+                { status: 404 }
+            );
         }
 
         const newPost = await prisma.comment.create({
             data: {
                 ...validatedData,
+                writerId: auth.writerId,
             },
         });
 
@@ -40,10 +45,16 @@ export async function POST(request: NextRequest) {
         console.log(error);
         if (error instanceof Error && error.name === "ValidationError") {
             console.log(error.message);
-            return NextResponse.json({ message: "Données invalides", details: error.message }, { status: 400 });
+            return NextResponse.json(
+                { message: "Données invalides", details: error.message },
+                { status: 400 }
+            );
         }
 
         console.error("Create alert error:", error);
-        return NextResponse.json({ message: "Erreur lors de la création de l'alerte" }, { status: 500 });
+        return NextResponse.json(
+            { message: "Erreur lors de la création de l'alerte" },
+            { status: 500 }
+        );
     }
 }

@@ -37,7 +37,8 @@ model User {
   companyAdmin       CompanyAdmin[]
   formation          formation[]
   Experience         Experience[]
-  Writer             Writer[]
+
+  writer Writer? @relation("userWriter")
 }
 
 model Company {
@@ -51,19 +52,38 @@ model Company {
   companyAdmin CompanyAdmin[]
   formation    formation[]
   Experience   Experience[]
-  Writer       Writer[]
+
+  writer Writer? @relation("companyWriter")
+}
+
+model WriterLink {
+  id              String @id @default(cuid())
+  userWriterId    String
+  companyWriterId String
+
+  userWriter    Writer @relation("WriterAsUserWriter", fields: [userWriterId], references: [id], onDelete: Cascade)
+  companyWriter Writer @relation("WriterAsCompanyWriter", fields: [companyWriterId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([userWriterId, companyWriterId])
 }
 
 model Writer {
-  id        String  @id @default(cuid())
-  userId    String?
-  companyId String?
+  id String @id @default(cuid())
 
-  user    User?     @relation(fields: [userId], references: [id])
-  company Company?  @relation(fields: [companyId], references: [id])
+  userId    String? @unique
+  companyId String? @unique
+
+  user    User?    @relation("userWriter", fields: [userId], references: [id])
+  company Company? @relation("companyWriter", fields: [companyId], references: [id])
+
   Post    Post[]
   Vote    Vote[]
   Comment Comment[]
+
+  linkedCompanies WriterLink[] @relation("WriterAsUserWriter")
+  LinkedUsers     WriterLink[] @relation("WriterAsCompanyWriter")
 }
 
 model formation {
@@ -104,10 +124,12 @@ model Post {
 }
 
 model Vote {
-  id        String  @id @default(cuid())
+  id        String   @id @default(cuid())
   writerId  String
   postId    String?
   commentId String?
+  createdAt DateTime @default(now())
+  status    Boolean
 
   writer  Writer   @relation(fields: [writerId], references: [id])
   post    Post?    @relation(fields: [postId], references: [id])

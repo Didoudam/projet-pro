@@ -1,16 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { postCreateSchema } from "@/lib/schemas";
+import { getAuthenticatedUser } from "@/lib/auth-helpers";
 
 
 // POST /api/post           Création de post
 export async function POST(request: NextRequest) {
     try {
-        //Vérifier que l'user est identifié ici
-        // if (!session?.session?.activeOrganizationId) {
-        //     return NextResponse.json({ message: "Non autorisé" }, { status: 401 });
-        // }
-
+        const auth = await getAuthenticatedUser(request)
+        if(auth instanceof NextResponse){
+            return auth
+        }
         const body = await request.json();
 
         // Validation des données
@@ -31,6 +31,7 @@ export async function POST(request: NextRequest) {
         const newPost = await prisma.post.create({
             data: {
                 ...validatedData,
+                writerId: auth.writerId
             },
         });
 

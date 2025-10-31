@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { userUpdateSchema } from "@/lib/schemas";
 import { getAuthenticatedUser } from "@/lib/auth-helpers";
+import { companyUpdateSchema } from "@/lib/schemas/companies";
 
 interface RouteParams {
-    params: Promise<{ userId: string }>;
+    params: Promise<{ companyId: string }>;
 }
 
-// GET /api/users/[userId]
+// GET /api/company/[companyId]
 export async function GET(request: NextRequest, { params }: RouteParams) {
     try {
         //Vérifier que l'user est identifié ici
@@ -15,35 +15,32 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
         //     return NextResponse.json({ message: "Non autorisé" }, { status: 401 });
         // }
         //params.then((userId) => console.log(userId)).catch(()=> console.error("eeeeee"));
-        const { userId } = await params;
-
-        const user = await prisma.user.findFirst({
+        const { companyId } = await params;
+        const company = await prisma.company.findFirst({
             select: {
                 id: true,
                 name: true,
-                email: true,
             },
             where: {
-                id: userId,
-                emailVerified: true,
+                id: companyId,
             },
         });
 
-        if (!user) {
+        if (!company) {
             return NextResponse.json(
                 { message: "utilisateur non trouvé" },
                 { status: 404 }
             );
         }
 
-        return NextResponse.json(user);
+        return NextResponse.json(company);
     } catch (error) {
         console.error("error:", error);
         return NextResponse.json({ message: "erreur !!!" }, { status: 500 });
     }
 }
 
-// PUT /api/users/[userId]
+// PUT /api/company/[companyId]
 export async function PUT(request: NextRequest, { params }: RouteParams) {
     try {
         //Vérifier que l'user est identifié ici
@@ -52,21 +49,20 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
             return auth;
         }
 
-        const { userId } = await params;
+        const { companyId } = await params;
 
-        const user = await prisma.user.findFirst({
+        const company = await prisma.company.findFirst({
             select: {
                 id: true,
             },
             where: {
-                id: userId,
-                emailVerified: true,
+                id: companyId,
             },
         });
 
-        if (!user) {
+        if (!company) {
             return NextResponse.json(
-                { message: "utilisateur non trouvé" },
+                { message: "Entreprise non trouvé" },
                 { status: 404 }
             );
         }
@@ -74,23 +70,23 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
         const body = await request.json();
 
         // Validation des données
-        const { email, ...validatedData } = await userUpdateSchema.validate(
+        const { ...validatedData } = await companyUpdateSchema.validate(
             body,
             {
                 stripUnknown: true,
             }
         );
 
-        const updatedUser = await prisma.user.update({
+        const updatedCompany = await prisma.company.update({
             where: {
-                id: userId,
+                id: companyId,
             },
             data: {
                 ...validatedData,
             },
         });
 
-        return NextResponse.json(updatedUser);
+        return NextResponse.json(updatedCompany);
     } catch (error) {
         console.log(error);
         if (error instanceof Error && error.name === "ValidationError") {
