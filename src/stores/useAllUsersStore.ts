@@ -2,14 +2,13 @@ import { create } from "zustand";
 import { UpdateUserSchemaType, CreateUserSchemaType } from "@/lib/schemas";
 import { fetchJson, postJson } from "@/lib/fetch-utils";
 import { User } from "@prisma/client";
-import { appendUser } from "@/lib/server/users.actions";
 
 interface FetchOptions {
 	force?: boolean;
 	safety?: boolean;
 }
 
-interface UsersStore {
+interface UsersAllStore {
 	users: User[] | undefined;
 
 	fetchUsers: (options?: FetchOptions) => Promise<void>;
@@ -17,12 +16,13 @@ interface UsersStore {
 	createUser: (data: CreateUserSchemaType) => Promise<void>;
 }
 
-export const useUsersStore = create<UsersStore>((set, get) => ({
+export const useAllUsersStore = create<UsersAllStore>((set, get) => ({
 	users: undefined,
 
 	fetchUsers: async (options?: FetchOptions) => {
 		const { force = false, safety = false } = options ?? {};
 		const { users } = get();
+
 
 		if (users && !force) {
 		    return;

@@ -1,7 +1,7 @@
 "use client"
 
 import useAsyncAction from "@/hooks/useAsyncAction";
-import { useUsersStore } from "@/stores/useUsersStore";
+import { useUsersStore } from "@/stores/useAllUsersStore";
 import { useEffect } from "react";
 import { UserRow } from "./UserRow";
 

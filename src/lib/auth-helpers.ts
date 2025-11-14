@@ -11,7 +11,7 @@ export type AuthenticatedUser =
 			writerId: string;
 	  };
 
-export async function getAuthenticatedUser(request: NextRequest) {
+export async function getAuthenticatedUser(request: NextRequest ) {
 	const authResult = await requireAuth(request);
 
 	// retourner l'érreur si il y en a

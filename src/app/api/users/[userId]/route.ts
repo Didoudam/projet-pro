@@ -22,6 +22,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
                 id: true,
                 name: true,
                 email: true,
+                writer: true,
             },
             where: {
                 id: userId,
@@ -29,14 +30,40 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
             },
         });
 
-        if (!user) {
+        if (!user || !user?.writer) {
             return NextResponse.json(
                 { message: "utilisateur non trouvé" },
                 { status: 404 }
             );
         }
 
-        return NextResponse.json(user);
+        // recuperation des writer id des entreprise pour l'utilisateur
+        const links = await prisma.writerLink.findMany({
+            where: {
+                userWriterId: user.writer.id,
+            },
+            select: {
+                companyWriterId: true,
+                companyWriter: {
+                    include: {
+                        company: true,
+                    },
+                },
+            },
+        });
+
+        const companyWriters: { id: string; name: string }[] = links.map(
+            (l) => ({
+                id: l.companyWriterId,
+                name: l.companyWriter.company?.name ?? "? compagny sans nom",
+            })
+        ); // transforme en tableau de Strings (id)
+        const writers: { id: string; name: string }[] = [
+            { id: user.writer.id, name: "My Writer" },
+            ...companyWriters,
+        ];
+
+        return NextResponse.json({ ...user, writers });
     } catch (error) {
         console.error("error:", error);
         return NextResponse.json({ message: "erreur !!!" }, { status: 500 });
