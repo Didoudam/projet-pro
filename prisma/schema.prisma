@@ -6,7 +6,7 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
+  // output   = "../generated/prisma"
 }
 
 datasource db {
@@ -17,8 +17,8 @@ datasource db {
 model User {
   id            String   @id @default(cuid())
   name          String
-  email         String
-  emailVerified Boolean
+  email         String   @unique
+  emailVerified Boolean  @default(false)
   image         String?
   firstName     String?
   lastName      String?
@@ -26,18 +26,19 @@ model User {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  session            Session[]
-  account            Account[]
-  relationAsUser1    Relation[]     @relation("UserAsUser1")
-  relationAsUser2    Relation[]     @relation("UserAsUser2")
+  session   Session[]
+  account   Account[]
+  relations Relation[] @relation("user-relations")
+  relatedBy Relation[] @relation("relation")
+
   ProfileShowAsUser1 ProfileShow[]  @relation("UserAsUser1")
   ProfileShowAsUser2 ProfileShow[]  @relation("UserAsUser2")
   skill              Skill[]
   companyAdmin       CompanyAdmin[]
-  post               Post[]
-  Comment            Comment[]
   formation          formation[]
   Experience         Experience[]
+
+  writer Writer? @relation("userWriter")
 }
 
 model Company {
@@ -49,10 +50,40 @@ model Company {
   createdAt   DateTime @default(now())
 
   companyAdmin CompanyAdmin[]
-  post         Post[]
-  Comment      Comment[]
   formation    formation[]
   Experience   Experience[]
+
+  writer Writer? @relation("companyWriter")
+}
+
+model WriterLink {
+  id              String @id @default(cuid())
+  userWriterId    String
+  companyWriterId String
+
+  userWriter    Writer @relation("WriterAsUserWriter", fields: [userWriterId], references: [id], onDelete: Cascade)
+  companyWriter Writer @relation("WriterAsCompanyWriter", fields: [companyWriterId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([userWriterId, companyWriterId])
+}
+
+model Writer {
+  id String @id @default(cuid())
+
+  userId    String? @unique
+  companyId String? @unique
+
+  user    User?    @relation("userWriter", fields: [userId], references: [id])
+  company Company? @relation("companyWriter", fields: [companyId], references: [id])
+
+  Post    Post[]
+  Vote    Vote[]
+  Comment Comment[]
+
+  linkedCompanies WriterLink[] @relation("WriterAsUserWriter")
+  LinkedUsers     WriterLink[] @relation("WriterAsCompanyWriter")
 }
 
 model formation {
@@ -84,14 +115,25 @@ model Post {
   createdAt  DateTime @default(now())
   content    String
   reactionId String?
-  userId     String?
-  companyId  String?
-  votes      Int?     @default(0)
-  company    Company? @relation(fields: [companyId], references: [id])
-  user       User?    @relation(fields: [userId], references: [id])
+  writerId   String
+  writer     Writer   @relation(fields: [writerId], references: [id])
 
   media   Media[]
   Comment Comment[]
+  Vote    Vote[]
+}
+
+model Vote {
+  id        String   @id @default(cuid())
+  writerId  String
+  postId    String?
+  commentId String?
+  createdAt DateTime @default(now())
+  status    Boolean
+
+  writer  Writer   @relation(fields: [writerId], references: [id])
+  post    Post?    @relation(fields: [postId], references: [id])
+  comment Comment? @relation(fields: [commentId], references: [id])
 }
 
 model Media {
@@ -110,16 +152,15 @@ model Comment {
   content   String
   createdAt DateTime @default(now())
   votes     Int?     @default(0)
-  userId    String?
-  companyId String?
   postId    String?
   commentId String?
-  company   Company? @relation(fields: [companyId], references: [id])
-  user      User?    @relation(fields: [userId], references: [id])
+  writerId  String
+  writer    Writer   @relation(fields: [writerId], references: [id])
   post      Post?    @relation(fields: [postId], references: [id])
   comment   Comment? @relation("CommentAsParentComment", fields: [commentId], references: [id])
 
   replies Comment[] @relation("CommentAsParentComment")
+  Vote    Vote[]
 }
 
 model CompanyAdmin {
@@ -140,19 +181,21 @@ model Skill {
 }
 
 model Relation {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  status    Boolean
-  idUser1   String
-  idUser2   String
-  user1     User     @relation("UserAsUser1", fields: [idUser1], references: [id], onDelete: Cascade)
-  user2     User     @relation("UserAsUser2", fields: [idUser2], references: [id], onDelete: Cascade)
+  id         String   @id @default(cuid())
+  createdAt  DateTime @default(now())
+  status     Boolean
+  userId     String
+  relationId String
+  user       User     @relation("user-relations", fields: [userId], references: [id], onDelete: Cascade)
+  relation   User     @relation("relation", fields: [relationId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, relationId])
 }
 
+//vue sur les profils (qui a vu mon profil)
 model ProfileShow {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
-  expiresAt DateTime
   idUser1   String
   idUser2   String
   user1     User     @relation("UserAsUser1", fields: [idUser1], references: [id], onDelete: Cascade)
