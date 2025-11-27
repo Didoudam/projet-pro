@@ -3,6 +3,37 @@
 import { Post as PrismaPost } from "@prisma/client";
 import Image from "next/image";
 import { getRelativeTime } from "@/lib/utils";
+import { Comment } from "./Comment";
+import { CommentForm } from "./CommentForm";
+import { FaComment } from "react-icons/fa";
+import { useState } from "react";
+import { useSession } from "@/lib/auth-client";
+
+type CommentWriter = {
+    id: string;
+    userId: string | null;
+    companyId: string | null;
+    user?: {
+        id: string;
+        name: string;
+        image: string | null;
+        firstName: string | null;
+        lastName: string | null;
+    } | null;
+    company?: {
+        id: string;
+        name: string;
+        image: string | null;
+    } | null;
+};
+
+type CommentType = {
+    id: string;
+    content: string;
+    createdAt: Date;
+    writer: CommentWriter;
+    replies?: CommentType[];
+};
 
 type PostWithAuthor = PrismaPost & {
     writer: {
@@ -28,6 +59,7 @@ type PostWithAuthor = PrismaPost & {
         altText: string | null;
         type: string | null;
     }>;
+    Comment?: CommentType[];
 };
 
 interface PostProps {
@@ -36,6 +68,9 @@ interface PostProps {
 }
 
 export const Post = ({ post, className = "" }: PostProps) => {
+    const [showComments, setShowComments] = useState(true);
+    const { data: session } = useSession();
+
     // Récupérer l'auteur (user ou company)
     const author = post.writer.user || post.writer.company;
     const authorName = author?.name || "Utilisateur inconnu";
@@ -48,6 +83,8 @@ export const Post = ({ post, className = "" }: PostProps) => {
             : authorName;
 
     const relativeTime = getRelativeTime(post.createdAt);
+    const commentCount = post.Comment?.length || 0;
+    const isAuthenticated = !!session?.user;
 
     return (
         <div
@@ -130,6 +167,44 @@ export const Post = ({ post, className = "" }: PostProps) => {
                             )}
                         </div>
                     ))}
+                </div>
+            )}
+
+            {/* Bouton pour afficher/masquer les commentaires */}
+            <div className="mt-4 pt-3 border-t">
+                <button
+                    onClick={() => setShowComments(!showComments)}
+                    className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors text-sm font-medium"
+                >
+                    <FaComment />
+                    <span>
+                        {commentCount} {commentCount <= 1 ? "commentaire" : "commentaires"}
+                    </span>
+                </button>
+            </div>
+
+            {/* Section commentaires */}
+            {showComments && (
+                <div className="mt-4">
+                    {/* Liste des commentaires */}
+                    {post.Comment && post.Comment.length > 0 && (
+                        <div className="space-y-1 mb-4">
+                            {post.Comment.map((comment) => (
+                                <Comment key={comment.id} comment={comment} />
+                            ))}
+                        </div>
+                    )}
+
+                    {/* Formulaire d'ajout de commentaire - seulement si connecté */}
+                    {isAuthenticated ? (
+                        <CommentForm postId={post.id} />
+                    ) : (
+                        <div className="mt-4 p-4 bg-gray-50 rounded-lg text-center">
+                            <p className="text-gray-600 text-sm">
+                                Connectez-vous pour laisser un commentaire
+                            </p>
+                        </div>
+                    )}
                 </div>
             )}
         </div>
