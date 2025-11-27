@@ -38,6 +38,16 @@ services:
     networks:
       - projet-pro-network
 
+  maildev:
+    image: maildev/maildev
+    container_name: projet-pro-maildev
+    restart: unless-stopped
+    ports:
+      - "1080:1080"  # Interface web
+      - "1025:1025"  # SMTP
+    networks:
+      - projet-pro-network
+
 volumes:
   mysql_data:
     driver: local

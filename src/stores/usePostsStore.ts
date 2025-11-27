@@ -1,4 +1,6 @@
 import { create } from "zustand";
+import { postJson } from "@/lib/fetch-utils";
+import { CreatePostSchemaType } from "@/lib/schemas/posts";
 
 type Writer = {
   id: string;
@@ -49,6 +51,7 @@ type PostsStore = {
   setPosts: (posts: Post[]) => void;
   fetchPosts: () => Promise<void>;
   addPost: (post: Post) => void;
+  createPost: (data: CreatePostSchemaType) => Promise<Post>;
   addComment: (postId: string, comment: Comment) => void;
   optimisticAddComment: (postId: string, content: string, tempId: string) => void;
 };
@@ -84,6 +87,15 @@ export const usePostsStore = create<PostsStore>((set, get) => ({
     set((state) => ({
       posts: [post, ...state.posts],
     })),
+
+  // Créer un nouveau post via l'API
+  createPost: async (data: CreatePostSchemaType) => {
+    const newPost = await postJson<Post>("/api/posts", data);
+    set((state) => ({
+      posts: [newPost, ...state.posts],
+    }));
+    return newPost;
+  },
 
   // Ajouter un commentaire à un post existant
   addComment: (postId, comment) =>

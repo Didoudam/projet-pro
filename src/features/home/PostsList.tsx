@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { Post } from "@/features/posts/components/Post";
+import { CreatePostForm } from "@/features/posts/components/CreatePostForm";
 import { usePostsStore } from "@/stores/usePostsStore";
 
 type PostType = {
@@ -31,10 +32,13 @@ export function PostsList({ initialPosts }: PostsListProps) {
   const displayPosts = posts.length > 0 ? posts : initialPosts;
 
   return (
-    <div className="space-y-4">
-      {displayPosts.map((post) => (
-        <Post key={post.id} post={post} />
-      ))}
+    <div className="space-y-6">
+      <CreatePostForm />
+      <div className="space-y-4">
+        {displayPosts.map((post) => (
+          <Post key={post.id} post={post} />
+        ))}
+      </div>
     </div>
   );
 }

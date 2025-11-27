@@ -65,18 +65,7 @@ export async function HomePage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <main className="max-w-4xl mx-auto px-4 py-6">
-        {posts.length === 0 ? (
-          <div className="bg-white rounded-lg shadow-sm p-8 text-center">
-            <p className="text-gray-500 text-lg">
-              Aucun post à afficher pour le moment.
-            </p>
-            <p className="text-gray-400 text-sm mt-2">
-              Soyez le premier à publier quelque chose !
-            </p>
-          </div>
-        ) : (
-          <PostsList initialPosts={posts} />
-        )}
+        <PostsList initialPosts={posts} />
       </main>
     </div>
   );

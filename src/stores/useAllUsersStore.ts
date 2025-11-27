@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { UpdateUserSchemaType, CreateUserSchemaType } from "@/lib/schemas";
-import { fetchJson, postJson } from "@/lib/fetch-utils";
+import { fetchJson, postJson, patchJson } from "@/lib/fetch-utils";
 import { User } from "@prisma/client";
 
 interface FetchOptions {
@@ -43,7 +43,7 @@ export const useAllUsersStore = create<UsersAllStore>((set, get) => ({
 	},
 
 	updateUser: async (id: string, data: UpdateUserSchemaType) => {
-		const updatedUser = await postJson<User>(`/api/users/${id}`, data);
+		const updatedUser = await patchJson<User>(`/api/users/${id}`, data);
 		const usersWithoutUpdated = (get().users ?? []).filter((u) => u.id !== id);
 
 		set({ users: [...usersWithoutUpdated, updatedUser] });

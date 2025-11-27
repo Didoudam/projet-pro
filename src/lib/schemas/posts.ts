@@ -2,8 +2,11 @@ import * as yup from "yup";
 import "./yup-extensions";
 
 export const postCreateSchema = yup.object({
-    content: yup.string().min(4, "Le contenu doit faire au moins 4 caractères").required("Le contenu est requis"),
-    writerId: yup.string().required("vous devez etre connecté pour créer un post")
+    content: yup
+        .string()
+        .min(1, "Le contenu ne peut pas être vide")
+        .max(5000, "Le contenu ne peut pas dépasser 5000 caractères")
+        .required("Le contenu est requis"),
 });
 
 export const postUpdateSchema = postCreateSchema.deepPartial();//rend les fields optionnel

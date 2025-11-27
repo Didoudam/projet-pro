@@ -1,13 +1,13 @@
 "use client"
 
 import useAsyncAction from "@/hooks/useAsyncAction";
-import { useUsersStore } from "@/stores/useAllUsersStore";
+import { useAllUsersStore } from "@/stores/useAllUsersStore";
 import { useEffect } from "react";
 import { UserRow } from "./UserRow";
 
 export const UserList = () => {
     const { isPending, execute } = useAsyncAction();
-    const { users, fetchUsers, createUser} = useUsersStore()
+    const { users, fetchUsers, createUser} = useAllUsersStore()
 
     useEffect(() => {
         execute(fetchUsers());
@@ -24,6 +24,8 @@ export const UserList = () => {
             firstName: `firstname-${now}`,
             lastName: `lastname-${now}`,
             email: `m-${now}@exemple.com`,
+            password: "Password123!",
+            image: null,
         });
     }
 

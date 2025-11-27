@@ -1,7 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { FaHome, FaUsers, FaBell, FaUser, FaSignOutAlt, FaBriefcase } from "react-icons/fa";
+import {
+    HomeIcon,
+    UsersIcon,
+    NotificationsIcon,
+    ProfileIcon,
+    LogoutIcon,
+    CompanyIcon,
+} from "@/lib/icons";
 import { useSession } from "@/lib/auth-client";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
@@ -71,7 +78,7 @@ export function Header() {
                   href="/"
                   className="flex flex-col items-center gap-1 text-gray-600 hover:text-blue-600 transition-colors group"
                 >
-                  <FaHome className="text-xl" />
+                  <HomeIcon className="text-xl" />
                   <span className="text-xs font-medium">Accueil</span>
                 </Link>
 
@@ -80,7 +87,7 @@ export function Header() {
                   href="/users"
                   className="flex flex-col items-center gap-1 text-gray-600 hover:text-blue-600 transition-colors group"
                 >
-                  <FaUsers className="text-xl" />
+                  <UsersIcon className="text-xl" />
                   <span className="text-xs font-medium">Réseau</span>
                 </Link>
 
@@ -90,7 +97,7 @@ export function Header() {
                     href="/my-companies"
                     className="flex flex-col items-center gap-1 text-gray-600 hover:text-green-600 transition-colors group relative"
                   >
-                    <FaBriefcase className="text-xl" />
+                    <CompanyIcon className="text-xl" />
                     <span className="text-xs font-medium">Mes entreprises</span>
                     {userCompanies && userCompanies.companies.length > 0 && (
                       <span className="absolute -top-1 -right-1 w-5 h-5 bg-green-500 text-white text-[10px] rounded-full flex items-center justify-center font-bold">
@@ -105,19 +112,19 @@ export function Header() {
                   href="/notifications"
                   className="flex flex-col items-center gap-1 text-gray-600 hover:text-blue-600 transition-colors group relative"
                 >
-                  <FaBell className="text-xl" />
+                  <NotificationsIcon className="text-xl" />
                   <span className="text-xs font-medium">Notifications</span>
                   {/* Badge de notification (optionnel) */}
                   <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
                 </Link>
 
-                {/* Profil - visible uniquement si connecté */}
+                {/* Dashboard - visible uniquement si connecté */}
                 <Link
-                  href="/profile"
+                  href="/dashboard"
                   className="flex flex-col items-center gap-1 text-gray-600 hover:text-blue-600 transition-colors group"
                 >
-                  <FaUser className="text-xl" />
-                  <span className="text-xs font-medium">Moi</span>
+                  <ProfileIcon className="text-xl" />
+                  <span className="text-xs font-medium">Dashboard</span>
                 </Link>
 
                 {/* Bouton déconnexion */}
@@ -125,7 +132,7 @@ export function Header() {
                   onClick={handleSignOut}
                   className="flex flex-col items-center gap-1 text-gray-600 hover:text-red-600 transition-colors group"
                 >
-                  <FaSignOutAlt className="text-xl" />
+                  <LogoutIcon className="text-xl" />
                   <span className="text-xs font-medium">Déconnexion</span>
                 </button>
               </>
