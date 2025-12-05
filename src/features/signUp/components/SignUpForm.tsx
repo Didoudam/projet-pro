@@ -18,24 +18,30 @@ export function SignUpForm() {
 
     const onSubmit = async (data: CreateUserSchemaType) => {
         try {
+            console.log("Données d'inscription:", data);
+
             // Construire le nom complet à partir du prénom et nom
             const fullName = `${data.firstName || ''} ${data.lastName || ''}`.trim();
 
+            console.log("Envoi de la requête d'inscription...");
             const result = await authClient.signUp.email({
                 email: data.email,
                 password: data.password,
                 name: fullName,
             });
 
+            console.log("Résultat de l'inscription:", result);
+
             if (result.error) {
+                console.error("Erreur d'inscription:", result.error);
                 error(result.error.message || "Erreur lors de l'inscription");
                 return;
             }
 
             success("Inscription réussie ! Un email de vérification vous a été envoyé.");
         } catch (err) {
+            console.error("Exception lors de l'inscription:", err);
             error("Une erreur inattendue s'est produite");
-            console.error("Erreur d'inscription:", err);
         }
     };
     return (
