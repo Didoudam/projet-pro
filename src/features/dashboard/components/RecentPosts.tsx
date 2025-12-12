@@ -3,16 +3,15 @@
 import Link from "next/link";
 import { getRelativeTime } from "@/lib/utils";
 import { CommentIcon, UpvoteIcon } from "@/lib/icons";
-
-type Vote = {
-    status: boolean;
-};
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
+import { StatBadge } from "@/components/ui/Badge";
+import { Comment, Vote } from "@/types/post";
 
 type PostWithCounts = {
     id: string;
     content: string;
     createdAt: Date;
-    Comment: any[];
+    Comment: Comment[];
     Vote: Vote[];
 };
 
@@ -23,55 +22,75 @@ interface RecentPostsProps {
 export function RecentPosts({ posts }: RecentPostsProps) {
     if (posts.length === 0) {
         return (
-            <div className="bg-white rounded-lg shadow-sm p-6">
-                <h2 className="text-xl font-semibold mb-4">Posts récents</h2>
-                <p className="text-gray-500 text-center py-8">
-                    Vous n avez pas encore publié de posts
-                </p>
-            </div>
+            <Card variant="technical">
+                <CardHeader pattern="grid">
+                    <CardTitle mono>Posts récents</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <div className="text-center py-12 pattern-dots">
+                        <p className="text-muted-foreground font-mono text-sm uppercase tracking-wider">
+                            {`// No posts yet`}
+                        </p>
+                        <p className="text-xs text-muted-foreground mt-2">
+                            Vous n&apos;avez pas encore publié de posts
+                        </p>
+                    </div>
+                </CardContent>
+            </Card>
         );
     }
 
     return (
-        <div className="bg-white rounded-lg shadow-sm p-6">
-            <h2 className="text-xl font-semibold mb-4">
-                Posts récents ({posts.length})
-            </h2>
+        <Card variant="technical">
+            <CardHeader pattern="barcode" className="flex flex-row items-center justify-between">
+                <CardTitle mono>Posts récents</CardTitle>
+                <StatBadge value={posts.length} variant="primary" />
+            </CardHeader>
 
-            <div className="space-y-4">
-                {posts.map((post) => {
-                    const upvotes = post.Vote.filter((v) => v.status === true).length;
-                    const downvotes = post.Vote.filter((v) => v.status === false).length;
+            <CardContent className="p-0">
+                <div className="divide-y-2 divide-border">
+                    {posts.map((post) => {
+                        const upvotes = post.Vote.filter((v) => v.status === true).length;
+                        const downvotes = post.Vote.filter((v) => v.status === false).length;
 
-                    return (
-                        <Link
-                            key={post.id}
-                            href={`/posts/${post.id}`}
-                            className="block border-l-4 border-blue-500 pl-4 py-2 hover:bg-gray-50 transition-colors rounded-r-lg"
-                        >
-                            <p className="text-gray-800 line-clamp-2 mb-2">
-                                {post.content}
-                            </p>
-                            <div className="flex items-center gap-4 text-sm text-gray-500">
-                                <span>{getRelativeTime(post.createdAt)}</span>
-                                <span className="flex items-center gap-1">
-                                    <CommentIcon className="text-xs" />
-                                    {post.Comment.length}
-                                </span>
-                                <span className="flex items-center gap-1 text-green-600">
-                                    <UpvoteIcon className="text-xs" />
-                                    {upvotes}
-                                </span>
-                                {downvotes > 0 && (
-                                    <span className="flex items-center gap-1 text-red-600">
-                                        ↓ {downvotes}
+                        return (
+                            <Link
+                                key={post.id}
+                                href={`/posts/${post.id}`}
+                                className="block border-l-4 border-primary hover:border-accent px-6 py-4 hover:bg-muted/30 transition-all group"
+                            >
+                                <p className="text-foreground line-clamp-2 mb-3 group-hover:text-primary transition-colors">
+                                    {post.content}
+                                </p>
+                                <div className="flex items-center gap-3 text-xs font-mono uppercase tracking-wider">
+                                    <span className="text-muted-foreground">
+                                        {getRelativeTime(post.createdAt)}
                                     </span>
-                                )}
-                            </div>
-                        </Link>
-                    );
-                })}
-            </div>
-        </div>
+                                    <span className="h-3 w-px bg-border" />
+                                    <span className="flex items-center gap-1.5 text-muted-foreground">
+                                        <CommentIcon className="text-xs" />
+                                        <span className="tabular-nums">{post.Comment.length}</span>
+                                    </span>
+                                    <span className="h-3 w-px bg-border" />
+                                    <span className="flex items-center gap-1.5 text-success">
+                                        <UpvoteIcon className="text-xs" />
+                                        <span className="tabular-nums font-bold">{upvotes}</span>
+                                    </span>
+                                    {downvotes > 0 && (
+                                        <>
+                                            <span className="h-3 w-px bg-border" />
+                                            <span className="flex items-center gap-1.5 text-error">
+                                                <span>↓</span>
+                                                <span className="tabular-nums font-bold">{downvotes}</span>
+                                            </span>
+                                        </>
+                                    )}
+                                </div>
+                            </Link>
+                        );
+                    })}
+                </div>
+            </CardContent>
+        </Card>
     );
 }

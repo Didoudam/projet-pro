@@ -65,6 +65,7 @@ export default async function PostDetailPage({ params }: PageProps) {
                             },
                         },
                     },
+                    Vote: true,
                     replies: {
                         include: {
                             writer: {
@@ -87,6 +88,7 @@ export default async function PostDetailPage({ params }: PageProps) {
                                     },
                                 },
                             },
+                            Vote: true,
                         },
                         orderBy: { createdAt: "asc" as const },
                     },
@@ -102,7 +104,7 @@ export default async function PostDetailPage({ params }: PageProps) {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-background pattern-dots">
             <main className="max-w-4xl mx-auto px-4 py-6">
                 <Post post={post} />
             </main>

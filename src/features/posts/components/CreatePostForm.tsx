@@ -4,6 +4,9 @@ import { useState } from "react";
 import { usePostsStore } from "@/stores/usePostsStore";
 import { useToastStore } from "@/stores/useToastStore";
 import { useSession } from "@/lib/auth-client";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
+import { Textarea } from "@/components/ui/Input";
+import { Button } from "@/components/ui/Button";
 
 export function CreatePostForm() {
     const [content, setContent] = useState("");
@@ -40,43 +43,55 @@ export function CreatePostForm() {
 
     if (!session?.user) {
         return (
-            <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-                <p className="text-gray-600 text-center">
-                    Connectez-vous pour publier un post
-                </p>
-            </div>
+            <Card variant="technical">
+                <CardContent className="text-center py-8">
+                    <p className="text-muted-foreground font-mono text-sm uppercase tracking-wider">
+                        {`// Authentication required`}
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-2">
+                        Connectez-vous pour publier un post
+                    </p>
+                </CardContent>
+            </Card>
         );
     }
 
     return (
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-            <form onSubmit={handleSubmit}>
-                <div className="mb-4">
-                    <textarea
-                        value={content}
-                        onChange={(e) => setContent(e.target.value)}
-                        placeholder="Quoi de neuf ?"
-                        rows={4}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
-                        disabled={isSubmitting}
-                    />
-                    <div className="mt-2 flex justify-between items-center text-sm text-gray-500">
-                        <span>
-                            {content.length} / 5000 caractères
-                        </span>
+        <Card variant="technical">
+            <CardHeader pattern="grid">
+                <CardTitle mono>Nouveau Post</CardTitle>
+            </CardHeader>
+            <CardContent>
+                <form onSubmit={handleSubmit}>
+                    <div className="mb-4">
+                        <Textarea
+                            value={content}
+                            onChange={(e) => setContent(e.target.value)}
+                            placeholder="Quoi de neuf ?"
+                            rows={4}
+                            disabled={isSubmitting}
+                        />
+                        <div className="mt-2 flex justify-between items-center text-xs font-mono text-muted-foreground">
+                            <span className="uppercase tracking-wider">
+                                Char count:
+                            </span>
+                            <span className="tabular-nums">
+                                {content.length} / 5000
+                            </span>
+                        </div>
                     </div>
-                </div>
 
-                <div className="flex justify-end">
-                    <button
-                        type="submit"
-                        disabled={isSubmitting || !content.trim()}
-                        className="bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                        {isSubmitting ? "Publication..." : "Publier"}
-                    </button>
-                </div>
-            </form>
-        </div>
+                    <div className="flex justify-end">
+                        <Button
+                            type="submit"
+                            variant="primary"
+                            disabled={isSubmitting || !content.trim()}
+                        >
+                            {isSubmitting ? "Publishing..." : "Publier"}
+                        </Button>
+                    </div>
+                </form>
+            </CardContent>
+        </Card>
     );
 }

@@ -1,22 +1,130 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Base colors - Light mode (inspired by Sony Mavica beige) */
+  --background: #f5f1e8;
+  --foreground: #0a0a0a;
+  --muted: #d4cfc4;
+  --muted-foreground: #6b6660;
+
+  /* Accent colors (inspired by TE & Sony) */
+  --primary: #ff6b00; /* Orange vif */
+  --primary-foreground: #ffffff;
+  --secondary: #0066ff; /* Bleu LCD */
+  --secondary-foreground: #ffffff;
+  --accent: #ff1493; /* Rose néon */
+  --accent-foreground: #ffffff;
+
+  /* UI elements */
+  --card: #ffffff;
+  --card-foreground: #0a0a0a;
+  --border: #2a2826;
+  --input: #ffffff;
+  --ring: #ff6b00;
+
+  /* Semantic colors */
+  --success: #00ff88;
+  --warning: #ffcc00;
+  --error: #ff3366;
+
+  /* Technical grid/pattern */
+  --grid: rgba(42, 40, 38, 0.1);
+
+  /* Shadows - dark in light mode */
+  --shadow-color: rgba(0, 0, 0, 0.9);
+
+  /* Border width */
+  --border-width: 2px;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-error: var(--error);
+
+  /* Shadow color for buttons */
+  --color-shadow: var(--shadow-color);
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
+    /* Base colors - Dark mode (inspired by Sony Discman) */
     --background: #0a0a0a;
-    --foreground: #ededed;
+    --foreground: #f5f1e8;
+    --muted: #1a1a1a;
+    --muted-foreground: #9a948a;
+
+    /* Accent colors stay vibrant in dark mode */
+    --primary: #ff7a1a;
+    --secondary: #3388ff;
+    --accent: #ff1493;
+
+    /* UI elements */
+    --card: #141414;
+    --card-foreground: #f5f1e8;
+    --border: #f5f1e8; /* Bordures blanches en dark mode */
+    --input: #1a1a1a;
+    --ring: #ff7a1a;
+
+    /* Technical grid/pattern */
+    --grid: rgba(245, 241, 232, 0.08);
+
+    /* Shadows - white in dark mode */
+    --shadow-color: rgba(245, 241, 232, 0.9);
+
+    /* Border width - thinner in dark mode */
+    --border-width: 1px;
   }
+}
+
+[data-theme="dark"] {
+  /* Base colors - Dark mode (inspired by Sony Discman) */
+  --background: #0a0a0a !important;
+  --foreground: #f5f1e8 !important;
+  --muted: #1a1a1a !important;
+  --muted-foreground: #9a948a !important;
+
+  /* Accent colors stay vibrant in dark mode */
+  --primary: #ff7a1a !important;
+  --secondary: #3388ff !important;
+  --accent: #ff1493 !important;
+
+  /* UI elements */
+  --card: #141414 !important;
+  --card-foreground: #f5f1e8 !important;
+  --border: #f5f1e8 !important; /* Bordures blanches en dark mode */
+  --input: #1a1a1a !important;
+  --ring: #ff7a1a !important;
+
+  /* Technical grid/pattern */
+  --grid: rgba(245, 241, 232, 0.08) !important;
+
+  /* Shadows - white in dark mode */
+  --shadow-color: rgba(245, 241, 232, 0.9) !important;
+
+  /* Border width - thinner in dark mode */
+  --border-width: 1px !important;
 }
 
 body {
@@ -25,6 +133,7 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+/* Animations */
 @keyframes slide-in {
   from {
     transform: translateX(100%);
@@ -36,6 +145,145 @@ body {
   }
 }
 
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.95; }
+}
+
 .animate-slide-in {
   animation: slide-in 0.3s ease-out;
+}
+
+.animate-flicker {
+  animation: flicker 0.15s ease-in-out;
+}
+
+/* Technical patterns (inspired by TE/Sony) */
+.pattern-grid {
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.pattern-dots {
+  background-image: radial-gradient(var(--grid) 1px, transparent 1px);
+  background-size: 4px 4px;
+}
+
+/* Technical borders */
+.border-technical {
+  border: 2px solid var(--border);
+  position: relative;
+}
+
+.border-technical::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  right: -1px;
+  bottom: -1px;
+  border: 1px solid var(--grid);
+  pointer-events: none;
+}
+
+/* LCD-style shadow */
+.shadow-lcd {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Barcode pattern utility */
+.pattern-barcode {
+  background: linear-gradient(
+    90deg,
+    var(--foreground) 0px, var(--foreground) 2px,
+    transparent 2px, transparent 4px,
+    var(--foreground) 4px, var(--foreground) 5px,
+    transparent 5px, transparent 8px,
+    var(--foreground) 8px, var(--foreground) 10px,
+    transparent 10px, transparent 11px,
+    var(--foreground) 11px, var(--foreground) 14px
+  );
+  background-size: 14px 100%;
+  background-repeat: repeat-x;
+}
+
+/* Dynamic border width utility */
+.border-adaptive {
+  border-width: var(--border-width);
+}
+
+.border-2-adaptive {
+  border-width: var(--border-width);
+}
+
+.border-t-2-adaptive {
+  border-top-width: var(--border-width);
+}
+
+.border-b-2-adaptive {
+  border-bottom-width: var(--border-width);
+}
+
+.border-l-2-adaptive {
+  border-left-width: var(--border-width);
+}
+
+.border-r-2-adaptive {
+  border-right-width: var(--border-width);
+}
+
+/* Dark mode overrides - thinner borders (1px) */
+[data-theme="dark"] .border-2,
+[data-theme="dark"] .border-adaptive,
+[data-theme="dark"] .border-2-adaptive {
+  border-width: 1px !important;
+}
+
+[data-theme="dark"] .border-t-2,
+[data-theme="dark"] .border-t-2-adaptive {
+  border-top-width: 1px !important;
+}
+
+[data-theme="dark"] .border-b-2,
+[data-theme="dark"] .border-b-2-adaptive {
+  border-bottom-width: 1px !important;
+}
+
+[data-theme="dark"] .border-l-2,
+[data-theme="dark"] .border-l-4,
+[data-theme="dark"] .border-l-2-adaptive {
+  border-left-width: 1px !important;
+}
+
+[data-theme="dark"] .border-r-2,
+[data-theme="dark"] .border-r-2-adaptive {
+  border-right-width: 1px !important;
+}
+
+/* Préférence système dark mode */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .border-2 {
+    border-width: 1px !important;
+  }
+
+  :root:not([data-theme="light"]) .border-t-2 {
+    border-top-width: 1px !important;
+  }
+
+  :root:not([data-theme="light"]) .border-b-2 {
+    border-bottom-width: 1px !important;
+  }
+
+  :root:not([data-theme="light"]) .border-l-2,
+  :root:not([data-theme="light"]) .border-l-4 {
+    border-left-width: 1px !important;
+  }
+
+  :root:not([data-theme="light"]) .border-r-2 {
+    border-right-width: 1px !important;
+  }
 }

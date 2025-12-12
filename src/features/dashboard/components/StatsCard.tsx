@@ -2,6 +2,9 @@
 
 import { User, Skill, Experience, formation } from "@prisma/client";
 import { StatsIcons } from "@/lib/icons";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
+import { StatBadge } from "@/components/ui/stat-badge";
+import { Comment, Vote } from "@/types/post";
 
 type UserWithRelations = User & {
     skill: Skill[];
@@ -9,13 +12,9 @@ type UserWithRelations = User & {
     formation: formation[];
 };
 
-type Vote = {
-    status: boolean;
-};
-
 type PostWithCounts = {
     id: string;
-    Comment: any[];
+    Comment: Comment[];
     Vote: Vote[];
 };
 
@@ -46,38 +45,36 @@ export function StatsCard({ posts }: StatsCardProps) {
             label: "Posts",
             value: totalPosts,
             icon: StatsIcons.posts,
-            color: "bg-blue-100 text-blue-700",
+            variant: "primary" as const,
         },
         {
             label: "Upvotes",
             value: `${voteRatio}%`,
             subValue: `${upvotes}↑ ${downvotes}↓`,
             icon: StatsIcons.upvotes,
-            color: "bg-purple-100 text-purple-700",
+            variant: "accent" as const,
         },
     ];
 
     return (
-        <div className="bg-white rounded-lg shadow-sm p-6">
-            <h2 className="text-xl font-semibold mb-4">Statistiques</h2>
-
-            <div className="grid grid-cols-2 gap-4">
-                {stats.map((stat) => (
-                    <div
-                        key={stat.label}
-                        className={`${stat.color} rounded-lg p-4 text-center`}
-                    >
-                        <div className="text-2xl mb-1">{stat.icon}</div>
-                        <div className="text-2xl font-bold">{stat.value}</div>
-                        {stat.subValue && (
-                            <div className="text-xs text-gray-600 mb-1">
-                                {stat.subValue}
-                            </div>
-                        )}
-                        <div className="text-sm font-medium">{stat.label}</div>
-                    </div>
-                ))}
-            </div>
-        </div>
+        <Card>
+            <CardHeader>
+                <CardTitle mono>Statistiques</CardTitle>
+            </CardHeader>
+            <CardContent>
+                <div className="grid grid-cols-2 gap-4">
+                    {stats.map((stat) => (
+                        <StatBadge
+                            key={stat.label}
+                            label={stat.label}
+                            value={stat.value}
+                            subValue={stat.subValue}
+                            icon={stat.icon}
+                            variant={stat.variant}
+                        />
+                    ))}
+                </div>
+            </CardContent>
+        </Card>
     );
 }

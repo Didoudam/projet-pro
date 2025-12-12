@@ -6,9 +6,9 @@ import {
     FaSignOutAlt,
     FaBriefcase,
     FaComment,
-    FaThumbsUp,
-    FaThumbsDown,
     FaEdit,
+    FaArrowUp,
+    FaArrowDown,
 } from "react-icons/fa";
 
 /**
@@ -26,8 +26,8 @@ export const CompanyIcon = FaBriefcase;
 
 // Interactions
 export const CommentIcon = FaComment;
-export const UpvoteIcon = FaThumbsUp;
-export const DownvoteIcon = FaThumbsDown;
+export const UpvoteIcon = FaArrowUp;
+export const DownvoteIcon = FaArrowDown;
 export const PostIcon = FaEdit;
 
 // Emojis pour les stats (peuvent être remplacés par des composants React Icons)

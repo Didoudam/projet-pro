@@ -1,21 +1,13 @@
 "use client";
 
 import { useEffect } from "react";
-import { Post } from "@/features/posts/components/Post";
+import { Post as PostComponent } from "@/features/posts/components/Post";
 import { CreatePostForm } from "@/features/posts/components/CreatePostForm";
 import { usePostsStore } from "@/stores/usePostsStore";
-
-type PostType = {
-  id: string;
-  content: string;
-  createdAt: Date;
-  writer: any;
-  media?: any[];
-  Comment?: any[];
-};
+import { Post } from "@/types/post";
 
 interface PostsListProps {
-  initialPosts: PostType[];
+  initialPosts: Post[];
 }
 
 export function PostsList({ initialPosts }: PostsListProps) {
@@ -36,7 +28,7 @@ export function PostsList({ initialPosts }: PostsListProps) {
       <CreatePostForm />
       <div className="space-y-4">
         {displayPosts.map((post) => (
-          <Post key={post.id} post={post} />
+          <PostComponent key={post.id} post={post} />
         ))}
       </div>
     </div>

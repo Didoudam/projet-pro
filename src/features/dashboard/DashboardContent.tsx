@@ -7,6 +7,9 @@ import { ProfileEditForm } from "./components/ProfileEditForm";
 import { StatsCard } from "./components/StatsCard";
 import { RecentPosts } from "./components/RecentPosts";
 import { SkillsManager } from "./components/SkillsManager";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
+import { Button } from "@/components/ui/Button";
+import { Comment, Vote } from "@/types/post";
 
 type UserWithRelations = User & {
     skill: Skill[];
@@ -30,8 +33,8 @@ type PostWithCounts = {
     id: string;
     content: string;
     createdAt: Date;
-    Comment: any[];
-    Vote: any[];
+    Comment: Comment[];
+    Vote: Vote[];
 };
 
 interface DashboardContentProps {
@@ -43,18 +46,19 @@ export function DashboardContent({ user, posts }: DashboardContentProps) {
     const [isEditing, setIsEditing] = useState(false);
 
     return (
-        <div className="space-y-6">
+        <div className="min-h-screen bg-background pattern-dots p-6">
+            <div className="max-w-7xl mx-auto space-y-6">
             {/* En-tête */}
             <div className="flex justify-between items-center">
-                <h1 className="text-3xl font-bold text-gray-900">
+                <h1 className="text-3xl font-bold text-foreground font-mono uppercase tracking-wide">
                     Mon Profil
                 </h1>
-                <button
+                <Button
                     onClick={() => setIsEditing(!isEditing)}
-                    className="bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors"
+                    variant={isEditing ? "outline" : "primary"}
                 >
                     {isEditing ? "Annuler" : "Modifier le profil"}
-                </button>
+                </Button>
             </div>
 
             {/* Grille principale */}
@@ -81,88 +85,97 @@ export function DashboardContent({ user, posts }: DashboardContentProps) {
 
                     {/* Expériences */}
                     {user.Experience.length > 0 && (
-                        <div className="bg-white rounded-lg shadow-sm p-6">
-                            <h2 className="text-xl font-semibold mb-4">
-                                Expériences
-                            </h2>
-                            <div className="space-y-4">
-                                {user.Experience.map((exp) => (
-                                    <div
-                                        key={exp.id}
-                                        className="border-l-2 border-blue-500 pl-4"
-                                    >
-                                        <h3 className="font-semibold">
-                                            {exp.name}
-                                        </h3>
-                                        {exp.company && (
-                                            <p className="text-sm text-gray-600">
-                                                {exp.company.name}
+                        <Card>
+                            <CardHeader pattern="grid">
+                                <CardTitle mono>
+                                    Expériences
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="space-y-4">
+                                    {user.Experience.map((exp) => (
+                                        <div
+                                            key={exp.id}
+                                            className="border-l-2 border-primary pl-4"
+                                        >
+                                            <h3 className="font-semibold text-foreground">
+                                                {exp.name}
+                                            </h3>
+                                            {exp.company && (
+                                                <p className="text-sm text-muted-foreground">
+                                                    {exp.company.name}
+                                                </p>
+                                            )}
+                                            <p className="text-sm text-muted-foreground font-mono">
+                                                {new Date(
+                                                    exp.startDate
+                                                ).toLocaleDateString()}{" "}
+                                                -{" "}
+                                                {exp.endDate
+                                                    ? new Date(
+                                                          exp.endDate
+                                                      ).toLocaleDateString()
+                                                    : "Aujourd'hui"}
                                             </p>
-                                        )}
-                                        <p className="text-sm text-gray-500">
-                                            {new Date(
-                                                exp.startDate
-                                            ).toLocaleDateString()}{" "}
-                                            -{" "}
-                                            {exp.endDate
-                                                ? new Date(
-                                                      exp.endDate
-                                                  ).toLocaleDateString()
-                                                : "Aujourd'hui"}
-                                        </p>
-                                        {exp.description && (
-                                            <p className="text-sm text-gray-700 mt-2">
-                                                {exp.description}
-                                            </p>
-                                        )}
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
+                                            {exp.description && (
+                                                <p className="text-sm text-foreground mt-2">
+                                                    {exp.description}
+                                                </p>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                            </CardContent>
+                        </Card>
                     )}
 
                     {/* Formations */}
                     {user.formation.length > 0 && (
-                        <div className="bg-white rounded-lg shadow-sm p-6">
-                            <h2 className="text-xl font-semibold mb-4">
-                                Formations
-                            </h2>
-                            <div className="space-y-4">
-                                {user.formation.map((form) => (
-                                    <div
-                                        key={form.id}
-                                        className="border-l-2 border-green-500 pl-4"
-                                    >
-                                        <h3 className="font-semibold">
-                                            {form.name}
-                                        </h3>
-                                        {form.company && (
-                                            <p className="text-sm text-gray-600">
-                                                {form.company.name}
+                        <Card>
+                            <CardHeader pattern="dots">
+                                <CardTitle mono>
+                                    Formations
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="space-y-4">
+                                    {user.formation.map((form) => (
+                                        <div
+                                            key={form.id}
+                                            className="border-l-2 border-accent pl-4"
+                                        >
+                                            <h3 className="font-semibold text-foreground">
+                                                {form.name}
+                                            </h3>
+                                            {form.company && (
+                                                <p className="text-sm text-muted-foreground">
+                                                    {form.company.name}
+                                                </p>
+                                            )}
+                                            <p className="text-sm text-muted-foreground font-mono">
+                                                {new Date(
+                                                    form.startDate
+                                                ).toLocaleDateString()}{" "}
+                                                -{" "}
+                                                {form.endDate
+                                                    ? new Date(
+                                                          form.endDate
+                                                      ).toLocaleDateString()
+                                                    : "En cours"}
                                             </p>
-                                        )}
-                                        <p className="text-sm text-gray-500">
-                                            {new Date(
-                                                form.startDate
-                                            ).toLocaleDateString()}{" "}
-                                            -{" "}
-                                            {form.endDate
-                                                ? new Date(
-                                                      form.endDate
-                                                  ).toLocaleDateString()
-                                                : "En cours"}
-                                        </p>
-                                        {form.description && (
-                                            <p className="text-sm text-gray-700 mt-2">
-                                                {form.description}
-                                            </p>
-                                        )}
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
+                                            {form.description && (
+                                                <p className="text-sm text-foreground mt-2">
+                                                    {form.description}
+                                                </p>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                            </CardContent>
+                        </Card>
                     )}
                 </div>
+            </div>
             </div>
         </div>
     );

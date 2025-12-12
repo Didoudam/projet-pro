@@ -9,10 +9,10 @@ interface ToastProps {
 }
 
 const toastStyles = {
-    success: "bg-green-500 border-green-600",
-    error: "bg-red-500 border-red-600",
-    info: "bg-blue-500 border-blue-600",
-    warning: "bg-yellow-500 border-yellow-600",
+    success: "bg-accent/20 border-accent text-accent",
+    error: "bg-secondary/20 border-secondary text-secondary",
+    info: "bg-primary/20 border-primary text-primary",
+    warning: "bg-primary/30 border-primary text-primary",
 };
 
 const toastIcons = {
@@ -35,14 +35,22 @@ export function Toast({ toast, onRemove }: ToastProps) {
 
     return (
         <div
-            className={`${toastStyles[toast.type]} text-white px-6 py-4 rounded-lg shadow-lg border-l-4 flex items-center gap-3 min-w-[300px] max-w-md animate-slide-in`}
+            className={`
+                ${toastStyles[toast.type]}
+                px-6 py-4 border-2
+                shadow-[4px_4px_0_0_var(--shadow-color)]
+                flex items-center gap-3 min-w-[300px] max-w-md
+                animate-slide-in
+                font-mono
+                backdrop-blur-md
+            `}
             role="alert"
         >
             <span className="text-xl font-bold">{toastIcons[toast.type]}</span>
-            <p className="flex-1 text-sm font-medium">{toast.message}</p>
+            <p className="flex-1 text-sm font-bold uppercase tracking-wider">{toast.message}</p>
             <button
                 onClick={() => onRemove(toast.id)}
-                className="text-white hover:text-gray-200 transition-colors font-bold text-lg"
+                className="hover:opacity-70 transition-opacity font-bold text-xl border-2 border-current w-6 h-6 flex items-center justify-center"
                 aria-label="Fermer"
             >
                 ×

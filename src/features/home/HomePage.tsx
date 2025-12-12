@@ -43,17 +43,20 @@ const getPostsQuery = () => ({
         writer: {
           include: writerSelect,
         },
+        Vote: true,
         replies: {
           include: {
             writer: {
               include: writerSelect,
             },
+            Vote: true,
           },
           orderBy: { createdAt: "asc" as const },
         },
       },
       orderBy: { createdAt: "asc" as const },
     },
+    Vote: true,
   },
   orderBy: { createdAt: "desc" as const },
   take: 100,
@@ -63,7 +66,7 @@ export async function HomePage() {
   const posts = await prisma.post.findMany(getPostsQuery());
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background pattern-dots">
       <main className="max-w-4xl mx-auto px-4 py-6">
         <PostsList initialPosts={posts} />
       </main>

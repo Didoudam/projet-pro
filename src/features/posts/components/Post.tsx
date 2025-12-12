@@ -10,6 +10,7 @@ import { VoteButtons } from "./VoteButtons";
 import { FaComment } from "react-icons/fa";
 import { useState } from "react";
 import { useSession } from "@/lib/auth-client";
+import { Card, CardContent } from "@/components/ui/Card";
 
 type CommentWriter = {
     id: string;
@@ -35,6 +36,7 @@ type CommentType = {
     createdAt: Date;
     writer: CommentWriter;
     replies?: CommentType[];
+    Vote?: Vote[];
 };
 
 type Vote = {
@@ -97,144 +99,144 @@ export const Post = ({ post, className = "" }: PostProps) => {
     const isAuthenticated = !!session?.user;
 
     return (
-        <div
-            className={`border rounded-lg p-4 bg-white shadow-sm ${className}`}
-        >
-            {/* Header avec avatar et infos auteur */}
-            <div className="flex items-start gap-3 mb-3">
-                {/* Avatar cliquable */}
-                {authorId && (
-                    <Link
-                        href={`/profile/${authorId}`}
-                        className="shrink-0 hover:opacity-80 transition-opacity"
-                    >
-                        {authorImage ? (
-                            <Image
-                                src={authorImage}
-                                alt={displayName}
-                                width={48}
-                                height={48}
-                                className="rounded-full object-cover"
-                            />
-                        ) : (
-                            <div className="w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 font-semibold">
-                                {displayName.charAt(0).toUpperCase()}
-                            </div>
-                        )}
-                    </Link>
-                )}
-
-                {/* Infos auteur */}
-                <div className="flex-1 min-w-0">
-                    {authorId ? (
+        <Card className={className}>
+            <CardContent className="p-0">
+                {/* Header avec avatar et infos auteur */}
+                <div className="flex items-start gap-3 p-4 bg-muted/20 pattern-grid">
+                    {/* Avatar cliquable */}
+                    {authorId && (
                         <Link
                             href={`/profile/${authorId}`}
-                            className="font-semibold text-gray-900 truncate hover:text-blue-600 transition-colors block"
+                            className="shrink-0 hover:opacity-80 transition-opacity"
                         >
-                            {displayName}
-                        </Link>
-                    ) : (
-                        <p className="font-semibold text-gray-900 truncate">
-                            {displayName}
-                        </p>
-                    )}
-                    <p className="text-sm text-gray-500">{relativeTime}</p>
-                </div>
-            </div>
-
-            {/* Contenu du post */}
-            <div className="mb-3">
-                <p className="text-gray-800 whitespace-pre-wrap">
-                    {post.content}
-                </p>
-            </div>
-
-            {/* Médias */}
-            {post.media && post.media.length > 0 && (
-                <div className="mt-3 space-y-2">
-                    {post.media.map((media) => (
-                        <div
-                            key={media.id}
-                            className="rounded-lg overflow-hidden"
-                        >
-                            {media.type?.startsWith("image") ? (
-                                <div
-                                    className="relative w-full"
-                                    style={{ maxHeight: "384px" }}
-                                >
-                                    <Image
-                                        src={media.url}
-                                        alt={media.altText || "Image du post"}
-                                        width={800}
-                                        height={600}
-                                        className="w-full h-auto object-cover"
-                                        style={{ maxHeight: "384px" }}
-                                    />
-                                </div>
-                            ) : media.type?.startsWith("video") ? (
-                                <video
-                                    src={media.url}
-                                    controls
-                                    className="w-full h-auto max-h-96"
-                                >
-                                    Votre navigateur ne supporte pas la vidéo.
-                                </video>
+                            {authorImage ? (
+                                <Image
+                                    src={authorImage}
+                                    alt={displayName}
+                                    width={40}
+                                    height={40}
+                                    className="border-2 border-border object-cover"
+                                />
                             ) : (
-                                <a
-                                    href={media.url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="block p-3 bg-gray-100 hover:bg-gray-200 transition-colors"
-                                >
-                                    Fichier joint
-                                </a>
+                                <div className="w-10 h-10 border-2 border-border bg-background flex items-center justify-center text-foreground font-mono font-bold text-sm">
+                                    {displayName.charAt(0).toUpperCase()}
+                                </div>
                             )}
-                        </div>
-                    ))}
-                </div>
-            )}
-
-            {/* Actions : Votes et Commentaires */}
-            <div className="mt-4 pt-3 border-t flex items-center justify-between">
-                {/* Boutons de vote */}
-                {post.Vote && <VoteButtons postId={post.id} votes={post.Vote} />}
-
-                {/* Bouton pour afficher/masquer les commentaires */}
-                <button
-                    onClick={() => setShowComments(!showComments)}
-                    className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors text-sm font-medium"
-                >
-                    <FaComment />
-                    <span>
-                        {commentCount} {commentCount <= 1 ? "commentaire" : "commentaires"}
-                    </span>
-                </button>
-            </div>
-
-            {/* Section commentaires */}
-            {showComments && (
-                <div className="mt-4">
-                    {/* Liste des commentaires */}
-                    {post.Comment && post.Comment.length > 0 && (
-                        <div className="space-y-1 mb-4">
-                            {post.Comment.map((comment) => (
-                                <Comment key={comment.id} comment={comment} />
-                            ))}
-                        </div>
+                        </Link>
                     )}
 
-                    {/* Formulaire d'ajout de commentaire - seulement si connecté */}
-                    {isAuthenticated ? (
-                        <CommentForm postId={post.id} />
-                    ) : (
-                        <div className="mt-4 p-4 bg-gray-50 rounded-lg text-center">
-                            <p className="text-gray-600 text-sm">
-                                Connectez-vous pour laisser un commentaire
+                    {/* Infos auteur */}
+                    <div className="flex-1 min-w-0">
+                        {authorId ? (
+                            <Link
+                                href={`/profile/${authorId}`}
+                                className="font-bold text-sm font-mono uppercase tracking-wider text-foreground truncate hover:text-primary transition-colors block"
+                            >
+                                {displayName}
+                            </Link>
+                        ) : (
+                            <p className="font-bold text-sm font-mono uppercase tracking-wider text-foreground truncate">
+                                {displayName}
                             </p>
-                        </div>
-                    )}
+                        )}
+                        <p className="text-xs text-muted-foreground font-mono mt-0.5">{relativeTime}</p>
+                    </div>
                 </div>
-            )}
-        </div>
+
+                {/* Contenu du post */}
+                <div className="px-4 py-4 bg-background border-y-2 border-border">
+                    <p className="text-foreground whitespace-pre-wrap leading-relaxed">
+                        {post.content}
+                    </p>
+                </div>
+
+                {/* Médias */}
+                {post.media && post.media.length > 0 && (
+                    <div className="space-y-2 p-4 bg-muted/10">
+                        {post.media.map((media) => (
+                            <div
+                                key={media.id}
+                                className="overflow-hidden border-2 border-border"
+                            >
+                                {media.type?.startsWith("image") ? (
+                                    <div
+                                        className="relative w-full"
+                                        style={{ maxHeight: "384px" }}
+                                    >
+                                        <Image
+                                            src={media.url}
+                                            alt={media.altText || "Image du post"}
+                                            width={800}
+                                            height={600}
+                                            className="w-full h-auto object-cover"
+                                            style={{ maxHeight: "384px" }}
+                                        />
+                                    </div>
+                                ) : media.type?.startsWith("video") ? (
+                                    <video
+                                        src={media.url}
+                                        controls
+                                        className="w-full h-auto max-h-96"
+                                    >
+                                        Votre navigateur ne supporte pas la vidéo.
+                                    </video>
+                                ) : (
+                                    <a
+                                        href={media.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="block p-3 bg-muted hover:bg-accent transition-colors"
+                                    >
+                                        Fichier joint
+                                    </a>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+                )}
+
+                {/* Actions : Votes et Commentaires */}
+                <div className="p-4 border-t-2 border-border bg-muted/20 flex items-center justify-between">
+                    {/* Boutons de vote */}
+                    <VoteButtons postId={post.id} votes={post.Vote || []} />
+
+                    {/* Bouton pour afficher/masquer les commentaires */}
+                    <button
+                        onClick={() => setShowComments(!showComments)}
+                        className="flex items-center gap-2 px-3 py-1.5 border-2 border-border bg-background text-foreground hover:border-primary hover:text-primary transition-all text-xs font-mono uppercase tracking-wider active:translate-x-[2px] active:translate-y-[2px]"
+                    >
+                        <FaComment />
+                        <span>
+                            {commentCount} {commentCount <= 1 ? "commentaire" : "commentaires"}
+                        </span>
+                    </button>
+                </div>
+
+                {/* Section commentaires */}
+                {showComments && (
+                    <div className="p-4 bg-muted/5 border-t-2 border-border">
+                        {/* Liste des commentaires */}
+                        {post.Comment && post.Comment.length > 0 && (
+                            <div className="space-y-2 mb-4">
+                                {post.Comment.map((comment) => (
+                                    <Comment key={comment.id} comment={comment} />
+                                ))}
+                            </div>
+                        )}
+
+                        {/* Formulaire d'ajout de commentaire - seulement si connecté */}
+                        {isAuthenticated ? (
+                            <CommentForm postId={post.id} />
+                        ) : (
+                            <div className="p-4 bg-muted text-center border-2 border-border">
+                                <p className="text-muted-foreground text-xs font-mono uppercase tracking-wider">
+                                    Connectez-vous pour laisser un commentaire
+                                </p>
+                            </div>
+                        )}
+                    </div>
+                )}
+            </CardContent>
+        </Card>
     );
 };

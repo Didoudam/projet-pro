@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { FaPaperPlane } from "react-icons/fa";
+import { Button } from "@/components/ui/Button";
+import { Textarea } from "@/components/ui/Input";
 
 interface CommentFormProps {
   postId: string;
@@ -50,34 +52,34 @@ export function CommentForm({ postId, onCommentAdded }: CommentFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="mt-4 border-t pt-4">
+    <form onSubmit={handleSubmit} className="mt-4 border-t-2 border-border pt-4">
       <div className="flex gap-3">
-        <div className="flex-shrink-0">
+        <div className="shrink-0">
           {/* Avatar de l'utilisateur connecté */}
-          <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm font-semibold">
+          <div className="w-8 h-8 border-2 border-border bg-primary flex items-center justify-center text-primary-foreground text-sm font-bold font-mono">
             U
           </div>
         </div>
 
         <div className="flex-1">
-          <textarea
+          <Textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}
             placeholder="Écrivez un commentaire..."
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             rows={2}
             disabled={isSubmitting}
           />
 
           {error && (
-            <p className="text-red-500 text-sm mt-1">{error}</p>
+            <p className="text-error text-sm mt-1 font-mono">{error}</p>
           )}
 
           <div className="flex justify-end mt-2">
-            <button
+            <Button
               type="submit"
               disabled={!content.trim() || isSubmitting}
-              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors text-sm font-medium"
+              variant="primary"
+              size="sm"
             >
               {isSubmitting ? (
                 <>
@@ -90,7 +92,7 @@ export function CommentForm({ postId, onCommentAdded }: CommentFormProps) {
                   <span>Commenter</span>
                 </>
               )}
-            </button>
+            </Button>
           </div>
         </div>
       </div>

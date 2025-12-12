@@ -15,37 +15,63 @@ export async function POST(request: NextRequest) {
     }
 
     try {
-        const { postId, status } = await request.json();
+        const { postId, commentId, status } = await request.json();
 
-        // Vérifier que le post existe
-        const post = await prisma.post.findUnique({
-            where: { id: postId },
-        });
-
-        if (!post) {
+        // Vérifier qu'on a soit un postId, soit un commentId
+        if (!postId && !commentId) {
             return NextResponse.json(
-                { error: "Post introuvable" },
-                { status: 404 }
+                { error: "postId ou commentId requis" },
+                { status: 400 }
             );
         }
 
-        // Récupérer le writer de l'utilisateur
-        const writer = await prisma.writer.findFirst({
+        // Vérifier que le post ou le commentaire existe
+        if (postId) {
+            const post = await prisma.post.findUnique({
+                where: { id: postId },
+            });
+
+            if (!post) {
+                return NextResponse.json(
+                    { error: "Post introuvable" },
+                    { status: 404 }
+                );
+            }
+        }
+
+        if (commentId) {
+            const comment = await prisma.comment.findUnique({
+                where: { id: commentId },
+            });
+
+            if (!comment) {
+                return NextResponse.json(
+                    { error: "Commentaire introuvable" },
+                    { status: 404 }
+                );
+            }
+        }
+
+        // Récupérer ou créer le writer de l'utilisateur
+        let writer = await prisma.writer.findFirst({
             where: { userId: session.user.id },
         });
 
         if (!writer) {
-            return NextResponse.json(
-                { error: "Profil writer non trouvé" },
-                { status: 404 }
-            );
+            // Créer automatiquement un writer si il n'existe pas
+            writer = await prisma.writer.create({
+                data: {
+                    userId: session.user.id,
+                },
+            });
         }
 
         // Vérifier si un vote existe déjà
         const existingVote = await prisma.vote.findFirst({
             where: {
                 writerId: writer.id,
-                postId: postId,
+                ...(postId ? { postId } : {}),
+                ...(commentId ? { commentId } : {}),
             },
         });
 
@@ -79,7 +105,8 @@ export async function POST(request: NextRequest) {
         const newVote = await prisma.vote.create({
             data: {
                 writerId: writer.id,
-                postId: postId,
+                ...(postId ? { postId } : {}),
+                ...(commentId ? { commentId } : {}),
                 status: status,
             },
         });

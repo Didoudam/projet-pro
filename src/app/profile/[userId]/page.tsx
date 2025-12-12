@@ -94,11 +94,13 @@ export default async function UserProfilePage({ params }: PageProps) {
                           writer: {
                               include: writerSelect,
                           },
+                          Vote: true,
                           replies: {
                               include: {
                                   writer: {
                                       include: writerSelect,
                                   },
+                                  Vote: true,
                               },
                               orderBy: { createdAt: "asc" },
                           },
@@ -110,11 +112,5 @@ export default async function UserProfilePage({ params }: PageProps) {
           })
         : [];
 
-    return (
-        <div className="min-h-screen bg-gray-50">
-            <main className="max-w-7xl mx-auto px-4 py-6">
-                <UserProfile user={user} posts={posts} />
-            </main>
-        </div>
-    );
+    return <UserProfile user={user} posts={posts} />;
 }

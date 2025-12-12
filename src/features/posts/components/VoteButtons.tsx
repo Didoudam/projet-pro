@@ -13,11 +13,12 @@ type Vote = {
 };
 
 interface VoteButtonsProps {
-    postId: string;
+    postId?: string;
+    commentId?: string;
     votes: Vote[];
 }
 
-export function VoteButtons({ postId, votes }: VoteButtonsProps) {
+export function VoteButtons({ postId, commentId, votes }: VoteButtonsProps) {
     const { data: session } = useSession();
     const { error } = useToastStore();
     const router = useRouter();
@@ -72,7 +73,8 @@ export function VoteButtons({ postId, votes }: VoteButtonsProps) {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    postId,
+                    ...(postId ? { postId } : {}),
+                    ...(commentId ? { commentId } : {}),
                     status: voteStatus,
                 }),
             });
@@ -124,33 +126,43 @@ export function VoteButtons({ postId, votes }: VoteButtonsProps) {
     };
 
     return (
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2">
             {/* Bouton Upvote */}
             <button
                 onClick={() => handleVote(true)}
                 disabled={isLoading}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg transition-all ${
-                    userVote === true
-                        ? "bg-green-100 text-green-700 border-2 border-green-500"
-                        : "bg-gray-100 text-gray-600 hover:bg-green-50 hover:text-green-600"
-                } ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`}
+                className={`
+                    flex items-center gap-2 px-3 py-1.5 font-mono
+                    border-2 transition-all
+                    ${userVote === true
+                        ? "bg-accent/20 text-accent border-accent shadow-[2px_2px_0_0_var(--shadow-color)] hover:shadow-none"
+                        : "bg-background text-foreground border-border hover:border-accent hover:text-accent"
+                    }
+                    ${isLoading ? "opacity-50 cursor-not-allowed" : ""}
+                    active:translate-x-[2px] active:translate-y-[2px]
+                `}
             >
-                <UpvoteIcon className="text-lg" />
-                <span className="font-semibold">{upvotes}</span>
+                <UpvoteIcon className="text-base" />
+                <span className="font-bold text-sm">{upvotes}</span>
             </button>
 
             {/* Bouton Downvote */}
             <button
                 onClick={() => handleVote(false)}
                 disabled={isLoading}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg transition-all ${
-                    userVote === false
-                        ? "bg-red-100 text-red-700 border-2 border-red-500"
-                        : "bg-gray-100 text-gray-600 hover:bg-red-50 hover:text-red-600"
-                } ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`}
+                className={`
+                    flex items-center gap-2 px-3 py-1.5 font-mono
+                    border-2 transition-all
+                    ${userVote === false
+                        ? "bg-secondary/20 text-secondary border-secondary shadow-[2px_2px_0_0_var(--shadow-color)] hover:shadow-none"
+                        : "bg-background text-foreground border-border hover:border-secondary hover:text-secondary"
+                    }
+                    ${isLoading ? "opacity-50 cursor-not-allowed" : ""}
+                    active:translate-x-[2px] active:translate-y-[2px]
+                `}
             >
-                <DownvoteIcon className="text-lg" />
-                <span className="font-semibold">{downvotes}</span>
+                <DownvoteIcon className="text-base" />
+                <span className="font-bold text-sm">{downvotes}</span>
             </button>
         </div>
     );
