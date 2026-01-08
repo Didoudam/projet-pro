@@ -45,13 +45,13 @@ export function SignUpForm() {
         }
     };
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             {/* Prénom et Nom */}
             <div className="grid grid-cols-2 gap-4">
                 <div>
                     <label
                         htmlFor="firstName"
-                        className="block text-sm font-medium text-gray-700 mb-1"
+                        className="block text-xs font-mono uppercase tracking-wider text-muted-foreground mb-2"
                     >
                         Prénom *
                     </label>
@@ -60,10 +60,10 @@ export function SignUpForm() {
                         {...register("firstName")}
                         id="firstName"
                         placeholder="Jean"
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-4 py-3 bg-input border-2 border-border font-mono text-sm focus:border-primary focus:outline-none transition-colors"
                     />
                     {errors.firstName && (
-                        <span className="text-red-500 text-sm mt-1 block">
+                        <span className="text-error text-xs font-mono mt-1 block">
                             {errors.firstName.message}
                         </span>
                     )}
@@ -72,7 +72,7 @@ export function SignUpForm() {
                 <div>
                     <label
                         htmlFor="lastName"
-                        className="block text-sm font-medium text-gray-700 mb-1"
+                        className="block text-xs font-mono uppercase tracking-wider text-muted-foreground mb-2"
                     >
                         Nom *
                     </label>
@@ -81,10 +81,10 @@ export function SignUpForm() {
                         {...register("lastName")}
                         id="lastName"
                         placeholder="Dupont"
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-4 py-3 bg-input border-2 border-border font-mono text-sm focus:border-primary focus:outline-none transition-colors"
                     />
                     {errors.lastName && (
-                        <span className="text-red-500 text-sm mt-1 block">
+                        <span className="text-error text-xs font-mono mt-1 block">
                             {errors.lastName.message}
                         </span>
                     )}
@@ -95,7 +95,7 @@ export function SignUpForm() {
             <div>
                 <label
                     htmlFor="email"
-                    className="block text-sm font-medium text-gray-700 mb-1"
+                    className="block text-xs font-mono uppercase tracking-wider text-muted-foreground mb-2"
                 >
                     Email *
                 </label>
@@ -104,10 +104,10 @@ export function SignUpForm() {
                     {...register("email")}
                     id="email"
                     placeholder="jean.dupont@example.com"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-3 bg-input border-2 border-border font-mono text-sm focus:border-primary focus:outline-none transition-colors"
                 />
                 {errors.email && (
-                    <span className="text-red-500 text-sm mt-1 block">
+                    <span className="text-error text-xs font-mono mt-1 block">
                         {errors.email.message}
                     </span>
                 )}
@@ -117,7 +117,7 @@ export function SignUpForm() {
             <div>
                 <label
                     htmlFor="password"
-                    className="block text-sm font-medium text-gray-700 mb-1"
+                    className="block text-xs font-mono uppercase tracking-wider text-muted-foreground mb-2"
                 >
                     Mot de passe *
                 </label>
@@ -126,10 +126,10 @@ export function SignUpForm() {
                     {...register("password")}
                     id="password"
                     placeholder="••••••••"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-3 bg-input border-2 border-border font-mono text-sm focus:border-primary focus:outline-none transition-colors"
                 />
                 {errors.password && (
-                    <span className="text-red-500 text-sm mt-1 block">
+                    <span className="text-error text-xs font-mono mt-1 block">
                         {errors.password.message}
                     </span>
                 )}
@@ -138,7 +138,7 @@ export function SignUpForm() {
             {/* Bouton submit */}
             <button
                 type="submit"
-                className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                className="w-full bg-primary text-primary-foreground py-4 px-4 border-2 border-border font-mono uppercase font-bold text-sm hover:shadow-[2px_2px_0px_0px_var(--shadow-color)] active:shadow-none transition-all focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
             >
                 S'inscrire
             </button>

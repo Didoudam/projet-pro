@@ -4,6 +4,7 @@ import "./globals.css";
 import { Header } from "@/components/Header";
 import { ToastContainer } from "@/components/ToastContainer";
 import { EmailVerificationBanner } from "@/components/EmailVerificationBanner";
+import { MainLayoutWrapper } from "@/components/MainLayoutWrapper";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,7 +33,9 @@ export default function RootLayout({
       >
         <Header />
         <EmailVerificationBanner />
-        {children}
+        <MainLayoutWrapper>
+          {children}
+        </MainLayoutWrapper>
         <ToastContainer />
       </body>
     </html>

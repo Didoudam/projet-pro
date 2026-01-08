@@ -4,6 +4,8 @@
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
+//npx prisma studio
+
 generator client {
   provider = "prisma-client-js"
   // output   = "../generated/prisma"
@@ -106,11 +108,15 @@ model formation {
 model Experience {
   id          String    @id @default(cuid())
   name        String
+  companyName String?
   startDate   DateTime
   endDate     DateTime?
   description String?
   companyId   String?
   userId      String
+  validated   Boolean   @default(false)
+  validatedBy String?
+  validatedAt DateTime?
   company     Company?  @relation(fields: [companyId], references: [id])
   user        User      @relation(fields: [userId], references: [id])
 }
@@ -168,13 +174,22 @@ model Comment {
   Vote    Vote[]
 }
 
+enum CompanyRole {
+  SUPER_ADMIN
+  ADMIN
+  MODERATOR
+}
+
 model CompanyAdmin {
-  id        String  @id @default(cuid())
-  role      String
+  id        String      @id @default(cuid())
+  role      CompanyRole @default(MODERATOR)
   companyId String
   userId    String
-  company   Company @relation(fields: [companyId], references: [id])
-  user      User    @relation(fields: [userId], references: [id])
+  createdAt DateTime    @default(now())
+  company   Company     @relation(fields: [companyId], references: [id])
+  user      User        @relation(fields: [userId], references: [id])
+
+  @@unique([companyId, userId])
 }
 
 model Skill {

@@ -24,8 +24,11 @@ export async function GET(request: NextRequest) {
 // POST /api/companies
 export async function POST(request: NextRequest) {
     try {
-
-		//faire une verifiaction des infos https://www.npmjs.com/package/next-csrf
+        // Vérifier l'authentification
+        const auth = await getAuthenticatedUser(request);
+        if (auth instanceof NextResponse) {
+            return auth;
+        }
 
         const body = await request.json();
 
@@ -34,30 +37,37 @@ export async function POST(request: NextRequest) {
             stripUnknown: true,
         });
 
-        //verification si l'entreprise existe deja
-        const company = await prisma.company.findFirst({
-            select: {
-                id: true,
-            },
-        });
-
-        if (company) {
-            return NextResponse.json(
-                { message: "Entreprise déjà existante" },
-                { status: 409 }
-            );
-        }
-
-        const newUser = await prisma.company.create({
+        // Créer l'entreprise avec un writer et ajouter l'utilisateur comme admin
+        const company = await prisma.company.create({
             data: {
                 ...validatedData,
                 writer: {
                     create: {},
                 },
+                companyAdmin: {
+                    create: {
+                        userId: auth.userId,
+                        role: "SUPER_ADMIN",
+                    },
+                },
+            },
+            include: {
+                writer: {
+                    select: {
+                        id: true,
+                    },
+                },
+                companyAdmin: {
+                    select: {
+                        id: true,
+                        role: true,
+                        userId: true,
+                    },
+                },
             },
         });
 
-        return NextResponse.json(newUser, { status: 201 });
+        return NextResponse.json({ company }, { status: 201 });
     } catch (error) {
         console.log(error);
         if (error instanceof Error && error.name === "ValidationError") {
@@ -68,9 +78,9 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        console.error("Create alert error:", error);
+        console.error("Create company error:", error);
         return NextResponse.json(
-            { message: "Erreur lors de la création de l'alerte" },
+            { message: "Erreur lors de la création de l'entreprise" },
             { status: 500 }
         );
     }

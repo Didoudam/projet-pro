@@ -80,11 +80,15 @@ Table formation {
 Table Experience {
   id String [pk]
   name String [not null]
+  companyName String
   startDate DateTime [not null]
   endDate DateTime
   description String
   companyId String
   userId String [not null]
+  validated Boolean [not null, default: false]
+  validatedBy String
+  validatedAt DateTime
   company Company
   user User [not null]
 }
@@ -141,11 +145,16 @@ Table Comment {
 
 Table CompanyAdmin {
   id String [pk]
-  role String [not null]
+  role CompanyRole [not null, default: 'MODERATOR']
   companyId String [not null]
   userId String [not null]
+  createdAt DateTime [default: `now()`, not null]
   company Company [not null]
   user User [not null]
+
+  indexes {
+    (companyId, userId) [unique]
+  }
 }
 
 Table Skill {
@@ -219,6 +228,12 @@ Table Verification {
   ipAddress String [not null]
   userAgent String [not null]
   userId String [not null]
+}
+
+Enum CompanyRole {
+  SUPER_ADMIN
+  ADMIN
+  MODERATOR
 }
 
 Ref: WriterLink.userWriterId > Writer.id [delete: Cascade]

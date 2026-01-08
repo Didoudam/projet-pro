@@ -9,6 +9,7 @@ import {
     FaEdit,
     FaArrowUp,
     FaArrowDown,
+    FaSearch,
 } from "react-icons/fa";
 
 /**
@@ -23,6 +24,7 @@ export const NotificationsIcon = FaBell;
 export const ProfileIcon = FaUser;
 export const LogoutIcon = FaSignOutAlt;
 export const CompanyIcon = FaBriefcase;
+export const SearchIcon = FaSearch;
 
 // Interactions
 export const CommentIcon = FaComment;

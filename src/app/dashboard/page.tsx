@@ -60,7 +60,11 @@ export default async function DashboardPage() {
               orderBy: { createdAt: "desc" },
               take: 5,
               include: {
-                  Comment: true,
+                  Comment: {
+                      include: {
+                          writer: true,
+                      },
+                  },
                   Vote: true,
               },
           })

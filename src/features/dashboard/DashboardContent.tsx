@@ -7,6 +7,7 @@ import { ProfileEditForm } from "./components/ProfileEditForm";
 import { StatsCard } from "./components/StatsCard";
 import { RecentPosts } from "./components/RecentPosts";
 import { SkillsManager } from "./components/SkillsManager";
+import { ExperienceManager } from "./components/ExperienceManager";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Comment, Vote } from "@/types/post";
@@ -76,6 +77,8 @@ export function DashboardContent({ user, posts }: DashboardContentProps) {
                     <StatsCard user={user} posts={posts} />
                     {/* Compétences avec gestion */}
                     <SkillsManager initialSkills={user.skill} />
+                    {/* Expériences professionnelles */}
+                    <ExperienceManager experiences={user.Experience} />
                 </div>
 
                 {/* Colonne droite - Activité */}

@@ -80,6 +80,7 @@ interface PostProps {
 
 export const Post = ({ post, className = "" }: PostProps) => {
     const [showComments, setShowComments] = useState(true);
+    const [comments, setComments] = useState<CommentType[]>(post.Comment || []);
     const { data: session } = useSession();
 
     // Récupérer l'auteur (user ou company)
@@ -95,8 +96,22 @@ export const Post = ({ post, className = "" }: PostProps) => {
             : authorName;
 
     const relativeTime = getRelativeTime(post.createdAt);
-    const commentCount = post.Comment?.length || 0;
+    const commentCount = comments.length;
     const isAuthenticated = !!session?.user;
+
+    // Callback pour ajouter un nouveau commentaire
+    const handleCommentAdded = async () => {
+        try {
+            // Récupérer les commentaires mis à jour depuis le serveur
+            const response = await fetch(`/api/posts/${post.id}`);
+            if (response.ok) {
+                const updatedPost = await response.json();
+                setComments(updatedPost.Comment || []);
+            }
+        } catch (error) {
+            console.error("Erreur lors du rafraîchissement des commentaires:", error);
+        }
+    };
 
     return (
         <Card className={className}>
@@ -216,9 +231,9 @@ export const Post = ({ post, className = "" }: PostProps) => {
                 {showComments && (
                     <div className="p-4 bg-muted/5 border-t-2 border-border">
                         {/* Liste des commentaires */}
-                        {post.Comment && post.Comment.length > 0 && (
+                        {comments.length > 0 && (
                             <div className="space-y-2 mb-4">
-                                {post.Comment.map((comment) => (
+                                {comments.map((comment) => (
                                     <Comment key={comment.id} comment={comment} />
                                 ))}
                             </div>
@@ -226,7 +241,7 @@ export const Post = ({ post, className = "" }: PostProps) => {
 
                         {/* Formulaire d'ajout de commentaire - seulement si connecté */}
                         {isAuthenticated ? (
-                            <CommentForm postId={post.id} />
+                            <CommentForm postId={post.id} onCommentAdded={handleCommentAdded} />
                         ) : (
                             <div className="p-4 bg-muted text-center border-2 border-border">
                                 <p className="text-muted-foreground text-xs font-mono uppercase tracking-wider">

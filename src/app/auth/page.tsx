@@ -17,79 +17,64 @@ export default function AuthPage() {
     }, [tabParam]);
 
     return (
-        <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-md w-full">
-                {/* En-tête */}
+        <div className="min-h-screen bg-background pattern-dots flex items-center justify-center p-4">
+            <div className="w-full max-w-md">
+                {/* Logo/Titre */}
                 <div className="text-center mb-8">
-                    <div className="mx-auto w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mb-4">
-                        <span className="text-white font-bold text-2xl">PP</span>
+                    <div className="inline-flex items-center justify-center w-16 h-16 bg-primary border-2 border-border mb-4">
+                        <span className="text-white font-bold text-3xl font-mono">PP</span>
                     </div>
-                    <h2 className="text-3xl font-bold text-gray-900">
+                    <h1 className="text-2xl font-bold text-foreground font-mono uppercase tracking-wider">
                         Projet Pro
-                    </h2>
-                    <p className="mt-2 text-sm text-gray-600">
-                        Votre réseau social professionnel
+                    </h1>
+                    <p className="text-muted-foreground text-sm font-mono mt-2 uppercase tracking-wide">
+                        Réseau social professionnel
                     </p>
                 </div>
 
-                {/* Card avec onglets */}
-                <div className="bg-white rounded-lg shadow-md overflow-hidden">
-                    {/* Onglets */}
-                    <div className="flex border-b">
+                {/* Conteneur principal */}
+                <div className="bg-card border-2 border-border shadow-[4px_4px_0px_0px_var(--shadow-color)] p-4 sm:p-6 md:p-8">
+                    {/* Tabs pour switcher entre connexion et inscription */}
+                    <div className="flex gap-0 mb-6 sm:mb-8 border-2 border-border">
                         <button
                             onClick={() => setActiveTab("signin")}
-                            className={`flex-1 py-4 px-6 text-center font-medium transition-colors ${
+                            className={`flex-1 py-2 sm:py-3 px-2 sm:px-4 font-mono uppercase text-xs sm:text-sm font-bold transition-all ${
                                 activeTab === "signin"
-                                    ? "text-blue-600 border-b-2 border-blue-600 bg-blue-50"
-                                    : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                                    ? "bg-primary text-primary-foreground"
+                                    : "bg-muted text-muted-foreground hover:bg-primary/20"
                             }`}
                         >
                             Connexion
                         </button>
                         <button
                             onClick={() => setActiveTab("signup")}
-                            className={`flex-1 py-4 px-6 text-center font-medium transition-colors ${
+                            className={`flex-1 py-2 sm:py-3 px-2 sm:px-4 font-mono uppercase text-xs sm:text-sm font-bold transition-all border-l-2 border-border ${
                                 activeTab === "signup"
-                                    ? "text-blue-600 border-b-2 border-blue-600 bg-blue-50"
-                                    : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                                    ? "bg-primary text-primary-foreground"
+                                    : "bg-muted text-muted-foreground hover:bg-primary/20"
                             }`}
                         >
                             Inscription
                         </button>
                     </div>
 
-                    {/* Contenu des onglets */}
-                    <div className="p-6">
-                        {activeTab === "signin" ? (
-                            <div>
-                                <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                                    Connectez-vous à votre compte
-                                </h3>
-                                <SignInForm />
-                            </div>
-                        ) : (
-                            <div>
-                                <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                                    Créer un compte
-                                </h3>
-                                <SignUpForm />
-                            </div>
-                        )}
+                    {/* Titre dynamique */}
+                    <div className="mb-4 sm:mb-6">
+                        <h2 className="text-lg sm:text-xl font-bold text-foreground mb-2">
+                            {activeTab === "signin" ? "Connectez-vous à votre compte" : "Créer un compte"}
+                        </h2>
                     </div>
+
+                    {/* Affichage conditionnel des formulaires */}
+                    {activeTab === "signin" ? <SignInForm /> : <SignUpForm />}
                 </div>
 
                 {/* Footer */}
-                <p className="mt-6 text-center text-sm text-gray-600">
-                    En vous inscrivant, vous acceptez nos{" "}
-                    <a href="#" className="text-blue-600 hover:underline">
-                        conditions d'utilisation
-                    </a>{" "}
-                    et notre{" "}
-                    <a href="#" className="text-blue-600 hover:underline">
-                        politique de confidentialité
-                    </a>
-                    .
-                </p>
+                <div className="mt-6 text-center">
+                    <p className="text-xs text-muted-foreground">
+                        En vous inscrivant, vous acceptez nos <a href="#" className="text-primary underline">conditions d&apos;utilisation</a> et notre <a href="#" className="text-primary underline">politique de confidentialité</a>.
+                    </p>
+                </div>
             </div>
         </div>
     );

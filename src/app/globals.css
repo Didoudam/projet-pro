@@ -4,6 +4,7 @@
   /* Base colors - Light mode (inspired by Sony Mavica beige) */
   --background: #f5f1e8;
   --foreground: #0a0a0a;
+  --foreground-rgb: 10, 10, 10;
   --muted: #d4cfc4;
   --muted-foreground: #6b6660;
 
@@ -72,6 +73,7 @@
     /* Base colors - Dark mode (inspired by Sony Discman) */
     --background: #0a0a0a;
     --foreground: #f5f1e8;
+    --foreground-rgb: 245, 241, 232;
     --muted: #1a1a1a;
     --muted-foreground: #9a948a;
 
@@ -102,6 +104,7 @@
   /* Base colors - Dark mode (inspired by Sony Discman) */
   --background: #0a0a0a !important;
   --foreground: #f5f1e8 !important;
+  --foreground-rgb: 245, 241, 232 !important;
   --muted: #1a1a1a !important;
   --muted-foreground: #9a948a !important;
 
@@ -199,13 +202,13 @@ body {
 .pattern-barcode {
   background: linear-gradient(
     90deg,
-    var(--foreground) 0px, var(--foreground) 2px,
+    rgba(var(--foreground-rgb), 0.1) 0px, rgba(var(--foreground-rgb), 0.1) 2px,
     transparent 2px, transparent 4px,
-    var(--foreground) 4px, var(--foreground) 5px,
+    rgba(var(--foreground-rgb), 0.1) 4px, rgba(var(--foreground-rgb), 0.1) 5px,
     transparent 5px, transparent 8px,
-    var(--foreground) 8px, var(--foreground) 10px,
+    rgba(var(--foreground-rgb), 0.1) 8px, rgba(var(--foreground-rgb), 0.1) 10px,
     transparent 10px, transparent 11px,
-    var(--foreground) 11px, var(--foreground) 14px
+    rgba(var(--foreground-rgb), 0.1) 11px, rgba(var(--foreground-rgb), 0.1) 14px
   );
   background-size: 14px 100%;
   background-repeat: repeat-x;
