@@ -1,0 +1,287 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table User {
+  id String [pk]
+  name String [not null]
+  email String [unique, not null]
+  emailVerified Boolean [not null, default: false]
+  image String
+  firstName String
+  lastName String
+  isRoot Boolean
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  session Session [not null]
+  account Account [not null]
+  relations Relation [not null]
+  relatedBy Relation [not null]
+  ProfileShowAsUser1 ProfileShow [not null]
+  ProfileShowAsUser2 ProfileShow [not null]
+  skill Skill [not null]
+  companyAdmin CompanyAdmin [not null]
+  formation formation [not null]
+  Experience Experience [not null]
+  writer Writer
+}
+
+Table Company {
+  id String [pk]
+  name String [not null]
+  activity String
+  image String
+  description String
+  createdAt DateTime [default: `now()`, not null]
+  companyAdmin CompanyAdmin [not null]
+  formation formation [not null]
+  Experience Experience [not null]
+  writer Writer
+}
+
+Table WriterLink {
+  id String [pk]
+  userWriterId String [not null]
+  companyWriterId String [not null]
+  userWriter Writer [not null]
+  companyWriter Writer [not null]
+  createdAt DateTime [default: `now()`, not null]
+
+  indexes {
+    (userWriterId, companyWriterId) [unique]
+  }
+}
+
+Table Writer {
+  id String [pk]
+  userId String [unique]
+  companyId String [unique]
+  user User
+  company Company
+  Post Post [not null]
+  Vote Vote [not null]
+  Comment Comment [not null]
+  linkedCompanies WriterLink [not null]
+  LinkedUsers WriterLink [not null]
+}
+
+Table formation {
+  id String [pk]
+  name String [not null]
+  startDate DateTime [not null]
+  endDate DateTime
+  description String
+  companyId String
+  userId String [not null]
+  company Company
+  user User [not null]
+}
+
+Table Experience {
+  id String [pk]
+  name String [not null]
+  companyName String
+  startDate DateTime [not null]
+  endDate DateTime
+  description String
+  companyId String
+  userId String [not null]
+  validated Boolean [not null, default: false]
+  validatedBy String
+  validatedAt DateTime
+  company Company
+  user User [not null]
+}
+
+Table Post {
+  id String [pk]
+  createdAt DateTime [default: `now()`, not null]
+  content String [not null]
+  reactionId String
+  writerId String [not null]
+  writer Writer [not null]
+  media Media [not null]
+  Comment Comment [not null]
+  Vote Vote [not null]
+}
+
+Table Vote {
+  id String [pk]
+  writerId String [not null]
+  postId String
+  commentId String
+  createdAt DateTime [default: `now()`, not null]
+  status Boolean [not null]
+  writer Writer [not null]
+  post Post
+  comment Comment
+}
+
+Table Media {
+  id String [pk]
+  nom String
+  url String [not null]
+  altText String
+  description String
+  type String
+  postId String [not null]
+  post Post [not null]
+}
+
+Table Comment {
+  id String [pk]
+  content String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  votes Int [default: 0]
+  postId String
+  commentId String
+  writerId String [not null]
+  writer Writer [not null]
+  post Post
+  comment Comment
+  replies Comment [not null]
+  Vote Vote [not null]
+}
+
+Table CompanyAdmin {
+  id String [pk]
+  role CompanyRole [not null, default: 'MODERATOR']
+  companyId String [not null]
+  userId String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  company Company [not null]
+  user User [not null]
+
+  indexes {
+    (companyId, userId) [unique]
+  }
+}
+
+Table Skill {
+  id String [pk]
+  name String [not null]
+  level Int [not null]
+  userId String [not null]
+  user User [not null]
+}
+
+Table Relation {
+  id String [pk]
+  createdAt DateTime [default: `now()`, not null]
+  status Boolean [not null]
+  userId String [not null]
+  relationId String [not null]
+  user User [not null]
+  relation User [not null]
+
+  indexes {
+    (userId, relationId) [unique]
+  }
+}
+
+Table ProfileShow {
+  id String [pk]
+  createdAt DateTime [default: `now()`, not null]
+  idUser1 String [not null]
+  idUser2 String [not null]
+  user1 User [not null]
+  user2 User [not null]
+}
+
+Table Session {
+  id String [pk]
+  userId String [not null]
+  token String [not null]
+  expiresAt DateTime [not null]
+  ipAddress String
+  userAgent String
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  user User [not null]
+}
+
+Table Account {
+  id String [pk]
+  userId String [not null]
+  accountId String [not null]
+  providerId String [not null]
+  accessToken String
+  refreshToken String
+  accessTokenExpireAt DateTime
+  refreshTokenExpireAt DateTime
+  scope String
+  idToken String
+  password String
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  user User [not null]
+}
+
+Table Verification {
+  id String [pk]
+  identifier String [not null]
+  value String [not null]
+  expiresAt DateTime [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  token String [not null]
+  ipAddress String [not null]
+  userAgent String [not null]
+  userId String [not null]
+}
+
+Enum CompanyRole {
+  SUPER_ADMIN
+  ADMIN
+  MODERATOR
+}
+
+Ref: WriterLink.userWriterId > Writer.id [delete: Cascade]
+
+Ref: WriterLink.companyWriterId > Writer.id [delete: Cascade]
+
+Ref: Writer.userId - User.id
+
+Ref: Writer.companyId - Company.id
+
+Ref: formation.companyId > Company.id
+
+Ref: formation.userId > User.id
+
+Ref: Experience.companyId > Company.id
+
+Ref: Experience.userId > User.id
+
+Ref: Post.writerId > Writer.id
+
+Ref: Vote.writerId > Writer.id
+
+Ref: Vote.postId > Post.id
+
+Ref: Vote.commentId > Comment.id
+
+Ref: Media.postId > Post.id
+
+Ref: Comment.writerId > Writer.id
+
+Ref: Comment.postId > Post.id
+
+Ref: Comment.commentId - Comment.id
+
+Ref: CompanyAdmin.companyId > Company.id
+
+Ref: CompanyAdmin.userId > User.id
+
+Ref: Skill.userId > User.id [delete: Cascade]
+
+Ref: Relation.userId > User.id [delete: Cascade]
+
+Ref: Relation.relationId > User.id [delete: Cascade]
+
+Ref: ProfileShow.idUser1 > User.id [delete: Cascade]
+
+Ref: ProfileShow.idUser2 > User.id [delete: Cascade]
+
+Ref: Session.userId > User.id [delete: Cascade]
+
+Ref: Account.userId > User.id [delete: Cascade]

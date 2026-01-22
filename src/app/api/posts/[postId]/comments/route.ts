@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import {prisma} from '@/lib/prisma'
+import { prisma } from '@/lib/prisma';
+import { auth } from "@/lib/auth";
 
 
 interface RouteParams {
@@ -65,5 +66,107 @@ export async function GET(request: NextRequest, { params }: RouteParams ) {
     } catch (error) {
         console.error("error:", error);
         return NextResponse.json({ message: "erreur !!!" }, { status: 500 });
+    }
+}
+
+// Créer un commentaire pour un post
+// POST /api/posts/[postId]/comments
+export async function POST(request: NextRequest, { params }: RouteParams) {
+    try {
+        // Vérifier l'authentification
+        const session = await auth.api.getSession({
+            headers: request.headers,
+        });
+
+        if (!session?.user) {
+            return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
+        }
+
+        const { postId } = await params;
+        const body = await request.json();
+        const { content, writerId } = body;
+
+        if (!content || typeof content !== 'string' || content.trim().length === 0) {
+            return NextResponse.json({ error: "Le contenu du commentaire est requis" }, { status: 400 });
+        }
+
+        // Vérifier que le post existe
+        const post = await prisma.post.findUnique({
+            where: { id: postId },
+        });
+
+        if (!post) {
+            return NextResponse.json({ error: "Post non trouvé" }, { status: 404 });
+        }
+
+        // Si un writerId est fourni, vérifier que l'utilisateur a accès à ce writer
+        let finalWriterId: string;
+
+        if (writerId) {
+            const writer = await prisma.writer.findUnique({
+                where: { id: writerId },
+                include: {
+                    LinkedUsers: {
+                        include: {
+                            userWriter: true,
+                        },
+                    },
+                },
+            });
+
+            if (!writer) {
+                return NextResponse.json({ error: "Writer non trouvé" }, { status: 404 });
+            }
+
+            // Vérifier que l'utilisateur a accès à ce writer
+            // Soit c'est son writer personnel, soit il est lié à ce writer d'entreprise
+            const hasAccess =
+                writer.userId === session.user.id ||
+                writer.LinkedUsers.some(link => link.userWriter.userId === session.user.id);
+
+            if (!hasAccess) {
+                return NextResponse.json({ error: "Accès refusé à ce writer" }, { status: 403 });
+            }
+
+            finalWriterId = writerId;
+        } else {
+            // Récupérer le writer personnel de l'utilisateur
+            const writer = await prisma.writer.findFirst({
+                where: { userId: session.user.id },
+            });
+
+            if (!writer) {
+                return NextResponse.json({ error: "Writer non trouvé" }, { status: 404 });
+            }
+
+            finalWriterId = writer.id;
+        }
+
+        // Créer le commentaire
+        const comment = await prisma.comment.create({
+            data: {
+                content: content.trim(),
+                postId,
+                writerId: finalWriterId,
+            },
+            include: {
+                writer: {
+                    include: {
+                        user: {
+                            select: {
+                                id: true,
+                                name: true,
+                                image: true,
+                            },
+                        },
+                    },
+                },
+            },
+        });
+
+        return NextResponse.json(comment, { status: 201 });
+    } catch (error) {
+        console.error("Erreur lors de la création du commentaire:", error);
+        return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
     }
 }

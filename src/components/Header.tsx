@@ -1,44 +1,47 @@
 "use client";
 
 import Link from "next/link";
-import { FaHome, FaUsers, FaBell, FaUser, FaSignOutAlt, FaBriefcase } from "react-icons/fa";
+import {
+    HomeIcon,
+    NotificationsIcon,
+    LogoutIcon,
+} from "@/lib/icons";
 import { useSession } from "@/lib/auth-client";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-
-interface UserWithCompanies {
-  isAdmin: boolean;
-  companies: Array<{ id: string; name: string; image?: string; activity?: string }>;
-}
+import { ThemeToggle, Button } from "@/components/ui";
+import { SearchBar } from "@/components/SearchBar";
+import { MobileMenu } from "@/components/MobileMenu";
+import { useState, useEffect } from "react";
 
 export function Header() {
   const { data: session } = useSession();
   const router = useRouter();
   const isAuthenticated = !!session?.user;
-  const [userCompanies, setUserCompanies] = useState<UserWithCompanies | null>(null);
+  const [hasNotifications, setHasNotifications] = useState(false);
 
-  // Récupérer les entreprises administrées par l'utilisateur
+  // Vérifier s'il y a des notifications
   useEffect(() => {
-    const fetchUserCompanies = async () => {
-      if (!isAuthenticated || !session?.user?.id) {
-        setUserCompanies(null);
-        return;
-      }
+    const checkNotifications = async () => {
+      if (!session?.user) return;
 
       try {
-        const response = await fetch(`/api/users/${session.user.id}/companies`);
+        const response = await fetch("/api/relations?status=pending");
         if (response.ok) {
           const data = await response.json();
-          setUserCompanies(data);
+          const pendingCount = data.received?.length || 0;
+          setHasNotifications(pendingCount > 0);
         }
       } catch (error) {
-        console.error("Erreur lors de la récupération des entreprises:", error);
+        console.error("Erreur lors de la vérification des notifications:", error);
       }
     };
 
-    fetchUserCompanies();
-  }, [isAuthenticated, session?.user?.id]);
+    checkNotifications();
+    // Vérifier toutes les 30 secondes
+    const interval = setInterval(checkNotifications, 30000);
+    return () => clearInterval(interval);
+  }, [session]);
 
   const handleSignOut = async () => {
     await authClient.signOut();
@@ -46,104 +49,92 @@ export function Header() {
     router.refresh();
   };
 
-  const isCompanyAdmin = userCompanies?.isAdmin ?? false;
-
   return (
-    <header className="bg-white border-b sticky top-0 z-50 shadow-sm">
+    <header className="bg-card border-b-2 border-border sticky top-0 z-50 shadow-sm">
       <div className="max-w-7xl mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-16 gap-4">
+          {/* Menu Burger (mobile uniquement) */}
+          {isAuthenticated && <MobileMenu />}
+
           {/* Logo et titre */}
-          <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-            <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-xl">PP</span>
+          <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity flex-shrink-0">
+            <div className="w-10 h-10 bg-primary rounded-none border-2 border-border flex items-center justify-center">
+              <span className="text-white font-bold text-3xl absolute top-2">ρ</span>
             </div>
-            <h1 className="text-xl font-bold text-gray-900 hidden sm:block">
-              Projet Pro
+            <h1 className="text-xl font-bold text-foreground font-mono uppercase tracking-wide hidden sm:block">
+              Pro Link
             </h1>
           </Link>
 
+          {/* Search Bar - visible uniquement si connecté */}
+          {isAuthenticated && (
+            <div className="flex-1 max-w-xl">
+              <SearchBar />
+            </div>
+          )}
+
           {/* Navigation principale */}
-          <nav className="flex items-center gap-6">
+          <nav className="flex items-center gap-3 sm:gap-6 flex-shrink-0">
             {isAuthenticated ? (
               <>
-                {/* Accueil - visible uniquement si connecté */}
+                {/* Accueil - masqué sur mobile */}
                 <Link
                   href="/"
-                  className="flex flex-col items-center gap-1 text-gray-600 hover:text-blue-600 transition-colors group"
+                  className="hidden md:flex flex-col items-center gap-1 text-muted-foreground hover:text-primary transition-colors group"
                 >
-                  <FaHome className="text-xl" />
-                  <span className="text-xs font-medium">Accueil</span>
+                  <HomeIcon className="text-xl" />
+                  <span className="text-xs font-mono uppercase tracking-wider">Accueil</span>
                 </Link>
 
-                {/* Réseau - visible uniquement si connecté */}
-                <Link
-                  href="/users"
-                  className="flex flex-col items-center gap-1 text-gray-600 hover:text-blue-600 transition-colors group"
-                >
-                  <FaUsers className="text-xl" />
-                  <span className="text-xs font-medium">Réseau</span>
-                </Link>
-
-                {/* Mes entreprises - visible uniquement si admin d'une entreprise */}
-                {isCompanyAdmin && (
-                  <Link
-                    href="/my-companies"
-                    className="flex flex-col items-center gap-1 text-gray-600 hover:text-green-600 transition-colors group relative"
-                  >
-                    <FaBriefcase className="text-xl" />
-                    <span className="text-xs font-medium">Mes entreprises</span>
-                    {userCompanies && userCompanies.companies.length > 0 && (
-                      <span className="absolute -top-1 -right-1 w-5 h-5 bg-green-500 text-white text-[10px] rounded-full flex items-center justify-center font-bold">
-                        {userCompanies.companies.length}
-                      </span>
-                    )}
-                  </Link>
-                )}
-
-                {/* Notifications - visible uniquement si connecté */}
+                {/* Notifications - simplifié sur mobile (icône uniquement) */}
                 <Link
                   href="/notifications"
-                  className="flex flex-col items-center gap-1 text-gray-600 hover:text-blue-600 transition-colors group relative"
+                  className="flex flex-col items-center gap-1 text-muted-foreground hover:text-primary transition-colors group relative"
                 >
-                  <FaBell className="text-xl" />
-                  <span className="text-xs font-medium">Notifications</span>
-                  {/* Badge de notification (optionnel) */}
-                  <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+                  <NotificationsIcon className="text-xl" />
+                  <span className="text-xs font-mono uppercase tracking-wider hidden md:block">Notifications</span>
+                  {/* Badge de notification - visible seulement s'il y a des notifications */}
+                  {hasNotifications && (
+                    <span className="absolute top-0 right-0 w-2 h-2 bg-error rounded-full animate-pulse"></span>
+                  )}
                 </Link>
 
-                {/* Profil - visible uniquement si connecté */}
-                <Link
-                  href="/profile"
-                  className="flex flex-col items-center gap-1 text-gray-600 hover:text-blue-600 transition-colors group"
-                >
-                  <FaUser className="text-xl" />
-                  <span className="text-xs font-medium">Moi</span>
-                </Link>
-
-                {/* Bouton déconnexion */}
+                {/* Bouton déconnexion - masqué sur mobile */}
                 <button
                   onClick={handleSignOut}
-                  className="flex flex-col items-center gap-1 text-gray-600 hover:text-red-600 transition-colors group"
+                  className="hidden md:flex flex-col items-center gap-1 px-2 py-1 border-2 border-transparent text-muted-foreground hover:border-border hover:text-error transition-all group"
                 >
-                  <FaSignOutAlt className="text-xl" />
-                  <span className="text-xs font-medium">Déconnexion</span>
+                  <LogoutIcon className="text-xl" />
+                  <span className="text-xs font-mono uppercase tracking-wider">Déconnexion</span>
                 </button>
+
+                {/* Theme Toggle - masqué sur mobile (dans le burger menu) */}
+                <div className="hidden md:block">
+                  <ThemeToggle />
+                </div>
               </>
             ) : (
               <>
                 {/* Boutons pour utilisateurs non connectés */}
-                <Link
-                  href="/auth?tab=signin"
-                  className="px-6 py-2 text-gray-700 hover:text-blue-600 font-medium transition-colors"
-                >
-                  Connexion
+                <Link href="/auth?tab=signin">
+                  <Button
+                    variant="ghost"
+                    className="text-xs sm:text-sm"
+                  >
+                    Connexion
+                  </Button>
                 </Link>
-                <Link
-                  href="/auth?tab=signup"
-                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium transition-colors shadow-sm"
-                >
-                  Inscription
+                <Link href="/auth?tab=signup">
+                  <Button
+                    variant="primary"
+                    className="text-xs sm:text-sm"
+                  >
+                    Inscription
+                  </Button>
                 </Link>
+
+                {/* Theme Toggle - visible pour les utilisateurs non connectés */}
+                <ThemeToggle />
               </>
             )}
           </nav>

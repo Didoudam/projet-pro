@@ -2,9 +2,13 @@ import * as yup from "yup";
 import "./yup-extensions";
 
 export const userCreateSchema = yup.object({
-    name: yup
+    firstName: yup
         .string()
-        .min(4, "Le nom doit faire au moins 4 caractères")
+        .min(2, "Le prénom doit faire au moins 2 caractères")
+        .required("Le prénom est requis"),
+    lastName: yup
+        .string()
+        .min(2, "Le nom doit faire au moins 2 caractères")
         .required("Le nom est requis"),
     email: yup
         .string()
@@ -28,8 +32,7 @@ export const userCreateSchema = yup.object({
         )
         .required("Le mot de passe est requis"),
     image: yup.string().url().default(null).nullable(),
-    lastName: yup.string().default(null).nullable(),
-    firstName: yup.string().default(null).nullable(),
+    name: yup.string().default(null).nullable(),
 });
 
 export const userUpdateSchema = userCreateSchema.deepPartial(); //rend les fields optionnel

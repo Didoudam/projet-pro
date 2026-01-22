@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Dark Mode</title>
+    <style>
+        :root {
+            --border: #2a2826;
+            --bg: #f5f1e8;
+        }
+        [data-theme="dark"] {
+            --border: #f5f1e8 !important;
+            --bg: #0a0a0a !important;
+        }
+        body {
+            background: var(--bg);
+            padding: 20px;
+        }
+        .test-box {
+            border: 2px solid var(--border);
+            padding: 20px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Dark Mode</h1>
+    <button onclick="toggleTheme()">Toggle Theme</button>
+    <div class="test-box">Box with border using CSS variable</div>
+    
+    <script>
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme');
+            const newTheme = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            console.log('Theme set to:', newTheme);
+            console.log('--border value:', getComputedStyle(document.documentElement).getPropertyValue('--border'));
+        }
+    </script>
+</body>
+</html>

@@ -70,7 +70,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     }
 }
 
-// PUT /api/users/[userId]
+// PUT/PATCH /api/users/[userId]
 export async function PUT(request: NextRequest, { params }: RouteParams) {
     try {
         //Vérifier que l'user est identifié ici
@@ -134,4 +134,9 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
             { status: 500 }
         );
     }
+}
+
+// PATCH /api/users/[userId] - Alias de PUT
+export async function PATCH(request: NextRequest, context: RouteParams) {
+    return PUT(request, context);
 }
