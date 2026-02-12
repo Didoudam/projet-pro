@@ -11,6 +11,7 @@ import { FaComment } from "react-icons/fa";
 import { useState } from "react";
 import { useSession } from "@/lib/auth-client";
 import { Card, CardContent } from "@/components/ui/Card";
+import { Avatar } from "@/components/ui/Avatar";
 
 type CommentWriter = {
     id: string;
@@ -87,7 +88,9 @@ export const Post = ({ post, className = "" }: PostProps) => {
     const author = post.writer.user || post.writer.company;
     const authorName = author?.name || "Utilisateur inconnu";
     const authorImage = author?.image;
+    const isCompany = !!post.writer.company;
     const authorId = post.writer.user?.id || post.writer.company?.id;
+    const authorLink = isCompany ? `/companies/${authorId}` : `/profile/${authorId}`;
 
     // Pour les users, afficher prénom + nom si disponible
     const displayName =
@@ -121,22 +124,14 @@ export const Post = ({ post, className = "" }: PostProps) => {
                     {/* Avatar cliquable */}
                     {authorId && (
                         <Link
-                            href={`/profile/${authorId}`}
+                            href={authorLink}
                             className="shrink-0 hover:opacity-80 transition-opacity"
                         >
-                            {authorImage ? (
-                                <Image
-                                    src={authorImage}
-                                    alt={displayName}
-                                    width={40}
-                                    height={40}
-                                    className="border-2 border-border object-cover"
-                                />
-                            ) : (
-                                <div className="w-10 h-10 border-2 border-border bg-background flex items-center justify-center text-foreground font-mono font-bold text-sm">
-                                    {displayName.charAt(0).toUpperCase()}
-                                </div>
-                            )}
+                            <Avatar
+                                src={authorImage}
+                                alt={displayName}
+                                size={40}
+                            />
                         </Link>
                     )}
 
@@ -144,7 +139,7 @@ export const Post = ({ post, className = "" }: PostProps) => {
                     <div className="flex-1 min-w-0">
                         {authorId ? (
                             <Link
-                                href={`/profile/${authorId}`}
+                                href={authorLink}
                                 className="font-bold text-sm font-mono uppercase tracking-wider text-foreground truncate hover:text-primary transition-colors block"
                             >
                                 {displayName}

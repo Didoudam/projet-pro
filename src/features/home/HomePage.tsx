@@ -66,8 +66,8 @@ export async function HomePage() {
   const posts = await prisma.post.findMany(getPostsQuery());
 
   return (
-    <div className="min-h-screen bg-background pattern-dots">
-      <main className="max-w-4xl mx-auto px-4 py-6">
+    <div className="min-h-screen bg-background pattern-dots" role="application" aria-label="Fil d'actualité">
+      <main className="max-w-4xl mx-auto px-4 py-6" aria-label="Contenu principal">
         <PostsList initialPosts={posts} />
       </main>
     </div>

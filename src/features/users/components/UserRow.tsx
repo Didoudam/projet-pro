@@ -1,7 +1,7 @@
 import { User } from "@prisma/client";
-import Image from "next/image";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/Card";
+import { Avatar } from "@/components/ui/Avatar";
 
 interface UserRowProps {
     user: User;
@@ -19,19 +19,11 @@ export const UserRow = ({ user, className = ""}: UserRowProps) => {
                 <CardContent className="p-4">
                     <div className="flex items-center gap-3">
                         {/* Avatar */}
-                        {user.image ? (
-                            <Image
-                                src={user.image}
-                                alt={displayName}
-                                width={48}
-                                height={48}
-                                className="border-2 border-border object-cover"
-                            />
-                        ) : (
-                            <div className="w-12 h-12 border-2 border-border bg-primary flex items-center justify-center text-primary-foreground font-bold font-mono text-xl">
-                                {displayName.charAt(0).toUpperCase()}
-                            </div>
-                        )}
+                        <Avatar
+                            src={user.image}
+                            alt={displayName}
+                            size={48}
+                        />
 
                         {/* Info */}
                         <div className="flex-1 min-w-0">

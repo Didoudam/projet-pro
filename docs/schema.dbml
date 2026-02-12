@@ -191,7 +191,7 @@ Table ProfileShow {
 Table Session {
   id String [pk]
   userId String [not null]
-  token String [not null]
+  token String [unique, not null]
   expiresAt DateTime [not null]
   ipAddress String
   userAgent String

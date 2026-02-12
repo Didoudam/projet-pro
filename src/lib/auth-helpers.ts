@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireAuth } from "./auth-middleware";
 import { prisma } from "./prisma";
 import { Session } from "./auth";
+import { validateCsrf } from "./csrf";
 
 export type AuthenticatedUser =
 	| NextResponse
@@ -11,7 +12,15 @@ export type AuthenticatedUser =
 			writerId: string;
 	  };
 
-export async function getAuthenticatedUser(request: NextRequest ) {
+export async function getAuthenticatedUser(request: NextRequest, options?: { skipCsrf?: boolean }) {
+	// Valider le CSRF pour les méthodes non-sûres (POST, PUT, PATCH, DELETE)
+	if (!options?.skipCsrf) {
+		const csrfError = validateCsrf(request);
+		if (csrfError) {
+			return csrfError;
+		}
+	}
+
 	const authResult = await requireAuth(request);
 
 	// retourner l'érreur si il y en a

@@ -1,8 +1,8 @@
 "use client";
 
 import { User } from "@prisma/client";
-import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/Card";
+import { Avatar } from "@/components/ui/Avatar";
 
 interface ProfileCardProps {
     user: User;
@@ -19,19 +19,12 @@ export function ProfileCard({ user }: ProfileCardProps) {
             <CardContent className="pt-6">
                 <div className="flex flex-col items-center">
                     {/* Avatar */}
-                    {user.image ? (
-                        <Image
-                            src={user.image}
-                            alt={displayName}
-                            width={120}
-                            height={120}
-                            className="rounded-none border-2 border-border object-cover mb-4"
-                        />
-                    ) : (
-                        <div className="w-30 h-30 rounded-none border-2 border-primary bg-primary flex items-center justify-center text-primary-foreground text-4xl font-bold font-mono mb-4">
-                            {displayName.charAt(0).toUpperCase()}
-                        </div>
-                    )}
+                    <Avatar
+                        src={user.image}
+                        alt={displayName}
+                        size={120}
+                        className="mb-4"
+                    />
 
                     {/* Informations */}
                     <h2 className="text-2xl font-bold text-foreground mb-1 font-mono uppercase tracking-wide">

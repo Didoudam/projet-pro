@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useToastStore } from "@/stores/useToastStore";
-import Image from "next/image";
+import { Avatar } from "@/components/ui/Avatar";
 
 interface RelationRequest {
     id: string;
@@ -128,21 +128,11 @@ export function RelationRequestsList({ requests: initialRequests }: RelationRequ
                             {/* Info utilisateur */}
                             <div className="flex items-center gap-4 flex-1">
                                 {/* Avatar */}
-                                <div className="w-12 h-12 border-2 border-border bg-muted flex items-center justify-center">
-                                    {request.user.image ? (
-                                        <Image
-                                            src={request.user.image}
-                                            alt={displayName}
-                                            width={48}
-                                            height={48}
-                                            className="w-full h-full object-cover"
-                                        />
-                                    ) : (
-                                        <span className="text-xl font-bold text-muted-foreground font-mono">
-                                            {displayName.charAt(0).toUpperCase()}
-                                        </span>
-                                    )}
-                                </div>
+                                <Avatar
+                                    src={request.user.image}
+                                    alt={displayName}
+                                    size={48}
+                                />
 
                                 {/* Nom et email */}
                                 <div className="flex-1">

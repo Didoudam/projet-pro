@@ -1,12 +1,11 @@
 "use client";
 
 import { User, Skill, Experience, formation } from "@prisma/client";
-import Image from "next/image";
-import { StatsIcons } from "@/lib/icons";
 import { Post } from "@/features/posts/components/Post";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { RelationButton } from "@/features/relations";
+import { Avatar } from "@/components/ui/Avatar";
 
 type UserWithRelations = User & {
 	skill: Skill[];
@@ -48,19 +47,12 @@ export function UserProfile({ user, posts }: UserProfileProps) {
 					<CardContent className='p-4 sm:p-6'>
 						<div className='flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6'>
 							{/* Avatar */}
-							{user.image ? (
-								<Image
-									src={user.image}
-									alt={displayName}
-									width={120}
-									height={120}
-									className='border-2 border-border object-cover w-20 h-20 sm:w-24 sm:h-24 md:w-30 md:h-30'
-								/>
-							) : (
-								<div className='w-20 h-20 sm:w-24 sm:h-24 md:w-30 md:h-30 border-2 border-border bg-primary flex items-center justify-center text-primary-foreground text-2xl sm:text-3xl md:text-4xl font-bold font-mono'>
-									{displayName.charAt(0).toUpperCase()}
-								</div>
-							)}
+							<Avatar
+								src={user.image}
+								alt={displayName}
+								size={120}
+								className='w-20 h-20 sm:w-24 sm:h-24 md:w-30 md:h-30'
+							/>
 
 							{/* Informations */}
 							<div className='flex-1 w-full text-center sm:text-left'>

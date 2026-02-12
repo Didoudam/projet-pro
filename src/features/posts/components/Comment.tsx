@@ -1,9 +1,9 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { getRelativeTime } from "@/lib/utils";
 import { VoteButtons } from "./VoteButtons";
+import { Avatar } from "@/components/ui/Avatar";
 
 type CommentWriter = {
   id: string;
@@ -69,36 +69,10 @@ export function Comment({ comment, isReply = false }: CommentProps) {
         <div className="shrink-0">
           {profileUrl ? (
             <Link href={profileUrl} className="block hover:opacity-80 transition-opacity">
-              {authorImage ? (
-                <Image
-                  src={authorImage}
-                  alt={displayName}
-                  width={32}
-                  height={32}
-                  className="border-2 border-border object-cover"
-                />
-              ) : (
-                <div className="w-8 h-8 border-2 border-border bg-background flex items-center justify-center text-foreground text-xs font-mono font-bold">
-                  {displayName.charAt(0).toUpperCase()}
-                </div>
-              )}
+              <Avatar src={authorImage} alt={displayName} size={32} />
             </Link>
           ) : (
-            <>
-              {authorImage ? (
-                <Image
-                  src={authorImage}
-                  alt={displayName}
-                  width={32}
-                  height={32}
-                  className="border-2 border-border object-cover"
-                />
-              ) : (
-                <div className="w-8 h-8 border-2 border-border bg-background flex items-center justify-center text-foreground text-xs font-mono font-bold">
-                  {displayName.charAt(0).toUpperCase()}
-                </div>
-              )}
-            </>
+            <Avatar src={authorImage} alt={displayName} size={32} />
           )}
         </div>
 

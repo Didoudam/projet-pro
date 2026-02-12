@@ -61,7 +61,7 @@ interface CardContentProps {
 
 export function CardContent({ children, className = "" }: CardContentProps) {
     return (
-        <div className={`px-6 py-4 ${className}`}>
+        <div className={`${className}`}>
             {children}
         </div>
     );

@@ -2,7 +2,7 @@ import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { createAuthMiddleware } from "better-auth/api";
 import { prisma } from "./prisma";
-import { sendVerificationEmail } from "./email";
+import { sendVerificationEmail, sendChangeEmailVerification } from "./email";
 
 console.log("🔧 [Better Auth] Configuration:", {
     baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3000",
@@ -27,6 +27,16 @@ export const auth = betterAuth({
             console.log("🔔 Envoi d'email de vérification à:", user.email);
             await sendVerificationEmail(user.email, url);
             console.log("✅ Email envoyé avec succès");
+        },
+    },
+    user: {
+        changeEmail: {
+            enabled: true,
+            sendChangeEmailVerification: async ({ user, newEmail, url }: { user: { email: string }; newEmail: string; url: string }) => {
+                console.log("🔔 Envoi d'email de changement à:", newEmail);
+                await sendChangeEmailVerification(newEmail, url);
+                console.log("✅ Email de changement envoyé avec succès");
+            },
         },
     },
     hooks: {

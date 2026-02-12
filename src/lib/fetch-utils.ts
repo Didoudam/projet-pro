@@ -1,5 +1,7 @@
 // utils/fetchJson.ts
 
+import { getCsrfHeaders } from "@/hooks/useCsrf";
+
 /**
  * Interface pour les réponses d'erreur de l'API
  */
@@ -97,6 +99,7 @@ export async function postJson<T>(url: string, data?: unknown, init?: RequestIni
     const headers = {
         "Content-Type": "application/json",
         Accept: "application/json",
+        ...getCsrfHeaders(), // Ajoute automatiquement le token CSRF
         ...(init?.headers || {}),
     };
 

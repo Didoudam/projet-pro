@@ -1,11 +1,13 @@
 "use client";
 
-import Image from "next/image";
+import Link from "next/link";
 import { CompanyWithRelations } from "@/types/company";
 import { Post } from "@/types/post";
 import { Post as PostComponent } from "@/features/posts/components/Post";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
+import { Avatar } from "@/components/ui/Avatar";
+import { Button } from "@/components/ui/Button";
 
 type CompanyWithAdmin = CompanyWithRelations & {
     companyAdmin?: Array<{
@@ -53,19 +55,12 @@ export function CompanyProfile({ company, posts, isAdmin, currentEmployees = [] 
                         <div className="p-4 sm:p-6 pattern-grid border-b-2 border-border">
                             <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6">
                                 {/* Logo */}
-                                {company.image ? (
-                                    <Image
-                                        src={company.image}
-                                        alt={company.name}
-                                        width={96}
-                                        height={96}
-                                        className="border-2 border-border object-cover w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24"
-                                    />
-                                ) : (
-                                    <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 border-2 border-border bg-background flex items-center justify-center text-foreground font-mono font-bold text-xl sm:text-2xl md:text-3xl">
-                                        {company.name.charAt(0).toUpperCase()}
-                                    </div>
-                                )}
+                                <Avatar
+                                    src={company.image}
+                                    alt={company.name}
+                                    size={96}
+                                    className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24"
+                                />
 
                                 {/* Infos */}
                                 <div className="flex-1 text-center sm:text-left w-full">
@@ -91,6 +86,22 @@ export function CompanyProfile({ company, posts, isAdmin, currentEmployees = [] 
                                             </Badge>
                                         )}
                                     </div>
+
+                                    {/* Boutons d'administration */}
+                                    {isAdmin && (
+                                        <div className="flex flex-wrap justify-center sm:justify-start gap-2 mt-4">
+                                            <Link href={`/companies/${company.id}/edit`}>
+                                                <Button variant="outline" className="text-xs">
+                                                    Modifier l&apos;entreprise
+                                                </Button>
+                                            </Link>
+                                            <Link href={`/companies/${company.id}/manage`}>
+                                                <Button variant="outline" className="text-xs">
+                                                    Gérer les admins
+                                                </Button>
+                                            </Link>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
 
@@ -128,19 +139,12 @@ export function CompanyProfile({ company, posts, isAdmin, currentEmployees = [] 
                                                     href={`/profile/${experience.user.id}`}
                                                     className="flex items-start gap-3 p-3 border-2 border-border bg-card hover:shadow-[2px_2px_0px_0px_var(--shadow-color)] transition-all"
                                                 >
-                                                    {experience.user.image ? (
-                                                        <Image
-                                                            src={experience.user.image}
-                                                            alt={displayName}
-                                                            width={40}
-                                                            height={40}
-                                                            className="border-2 border-border object-cover shrink-0"
-                                                        />
-                                                    ) : (
-                                                        <div className="w-10 h-10 border-2 border-border bg-muted flex items-center justify-center text-foreground font-mono font-bold shrink-0">
-                                                            {displayName.charAt(0).toUpperCase()}
-                                                        </div>
-                                                    )}
+                                                    <Avatar
+                                                        src={experience.user.image}
+                                                        alt={displayName}
+                                                        size={40}
+                                                        className="shrink-0"
+                                                    />
                                                     <div className="flex-1 min-w-0">
                                                         <p className="font-bold text-xs text-foreground truncate">
                                                             {displayName}
@@ -179,19 +183,11 @@ export function CompanyProfile({ company, posts, isAdmin, currentEmployees = [] 
                                                     key={admin.id}
                                                     className="flex items-center gap-3 p-3 border-2 border-border bg-muted/20"
                                                 >
-                                                    {admin.user.image ? (
-                                                        <Image
-                                                            src={admin.user.image}
-                                                            alt={displayName}
-                                                            width={40}
-                                                            height={40}
-                                                            className="border-2 border-border object-cover"
-                                                        />
-                                                    ) : (
-                                                        <div className="w-10 h-10 border-2 border-border bg-background flex items-center justify-center text-foreground font-mono font-bold text-sm">
-                                                            {displayName.charAt(0).toUpperCase()}
-                                                        </div>
-                                                    )}
+                                                    <Avatar
+                                                        src={admin.user.image}
+                                                        alt={displayName}
+                                                        size={40}
+                                                    />
                                                     <div className="flex-1 min-w-0">
                                                         <p className="font-bold text-xs font-mono uppercase tracking-wider text-foreground truncate">
                                                             {displayName}

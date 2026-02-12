@@ -25,12 +25,19 @@ export function PostsList({ initialPosts }: PostsListProps) {
 
   return (
     <div className="space-y-6">
-      <CreatePostForm />
-      <div className="space-y-4">
-        {displayPosts.map((post) => (
-          <PostComponent key={post.id} post={post} />
-        ))}
-      </div>
+      <section aria-label="Créer une publication">
+        <CreatePostForm />
+      </section>
+      <section aria-label="Liste des publications" aria-live="polite">
+        <h2 className="sr-only">Publications récentes</h2>
+        <div className="space-y-4" role="feed" aria-busy="false">
+          {displayPosts.map((post, index) => (
+            <article key={post.id} aria-posinset={index + 1} aria-setsize={displayPosts.length}>
+              <PostComponent post={post} />
+            </article>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }

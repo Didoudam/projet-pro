@@ -10,11 +10,7 @@ interface RouteParams {
 // GET /api/users/[userId]
 export async function GET(request: NextRequest, { params }: RouteParams) {
     try {
-        //Vérifier que l'user est identifié ici
-        // if (!session?.session?.activeOrganizationId) {
-        //     return NextResponse.json({ message: "Non autorisé" }, { status: 401 });
-        // }
-        //params.then((userId) => console.log(userId)).catch(()=> console.error("eeeeee"));
+        // SÉCURISÉ - Requête paramétrée Prisma
         const { userId } = await params;
 
         const user = await prisma.user.findFirst({

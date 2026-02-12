@@ -1,0 +1,20 @@
+# Robots.txt pour Projet Pro
+
+User-agent: *
+Allow: /
+
+# Pages publiques autorisées
+Allow: /
+Allow: /companies
+Allow: /users
+Allow: /auth
+
+# Pages privées interdites aux robots
+Disallow: /dashboard
+Disallow: /my-companies
+Disallow: /network
+Disallow: /notifications
+Disallow: /api/
+
+# Sitemap
+Sitemap: https://projetpro.com/sitemap.xml

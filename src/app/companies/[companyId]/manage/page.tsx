@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { CompanyAdminManager } from "@/features/companies/components/CompanyAdminManager";
 import { ExperienceValidator } from "@/features/companies/components/ExperienceValidator";
+import { DeleteCompanyButton } from "@/features/companies/components/DeleteCompanyButton";
 
 export default async function CompanyManagePage({
   params,
@@ -102,6 +103,13 @@ export default async function CompanyManagePage({
           userRole={userAdmin.role}
         />
       </div>
+
+      {/* Zone de suppression - uniquement pour SUPER_ADMIN */}
+      {userAdmin.role === "SUPER_ADMIN" && (
+        <div className="mt-8">
+          <DeleteCompanyButton companyId={id} companyName={company.name} />
+        </div>
+      )}
     </div>
   );
 }
