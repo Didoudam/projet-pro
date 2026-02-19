@@ -3,10 +3,7 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log('🌱 Début du seed de la base de données...\n');
 
-  // Nettoyer la base de données
-  console.log('🗑️  Nettoyage de la base de données...');
   await prisma.vote.deleteMany();
   await prisma.comment.deleteMany();
   await prisma.media.deleteMany();
@@ -28,7 +25,6 @@ async function main() {
   // Créer des utilisateurs
   console.log('👥 Création des utilisateurs...');
   const users = await Promise.all([
-    // Votre compte (sera créé via Better Auth après le seed)
     prisma.user.create({
       data: {
         name: 'Damien Guilbaud',
@@ -40,7 +36,6 @@ async function main() {
         isRoot: true,
       },
     }),
-    // Autres utilisateurs
     prisma.user.create({
       data: {
         name: 'Alice Martin',

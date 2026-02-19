@@ -1,9 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { getRelativeTime } from "@/lib/utils";
 import { VoteButtons } from "./VoteButtons";
 import { Avatar } from "@/components/ui/Avatar";
+import { ReplyForm } from "./ReplyForm";
 
 type CommentWriter = {
   id: string;
@@ -40,10 +42,13 @@ type CommentType = {
 
 interface CommentProps {
   comment: CommentType;
+  postId: string;
   isReply?: boolean;
+  onReplyAdded?: () => void;
 }
 
-export function Comment({ comment, isReply = false }: CommentProps) {
+export function Comment({ comment, postId, isReply = false, onReplyAdded }: CommentProps) {
+  const [showReplyForm, setShowReplyForm] = useState(false);
   const author = comment.writer.user || comment.writer.company;
   const authorName = author?.name || "Utilisateur inconnu";
   const authorImage = author?.image;
@@ -93,12 +98,28 @@ export function Comment({ comment, isReply = false }: CommentProps) {
           <div className="flex items-center justify-between mt-2">
             <div className="flex items-center gap-4">
               <span className="text-xs text-muted-foreground font-mono">{relativeTime}</span>
-              <button className="text-xs text-muted-foreground hover:text-primary font-mono uppercase tracking-wider transition-colors">
-                Répondre
+              <button
+                onClick={() => setShowReplyForm(!showReplyForm)}
+                className="text-xs text-muted-foreground hover:text-primary font-mono uppercase tracking-wider transition-colors"
+              >
+                {showReplyForm ? "Annuler" : "Répondre"}
               </button>
             </div>
             <VoteButtons commentId={comment.id} votes={comment.Vote || []} />
           </div>
+
+          {/* Formulaire de réponse */}
+          {showReplyForm && (
+            <ReplyForm
+              postId={postId}
+              parentCommentId={comment.id}
+              onReplyAdded={() => {
+                setShowReplyForm(false);
+                onReplyAdded?.();
+              }}
+              onCancel={() => setShowReplyForm(false)}
+            />
+          )}
         </div>
       </div>
 
@@ -106,7 +127,7 @@ export function Comment({ comment, isReply = false }: CommentProps) {
       {comment.replies && comment.replies.length > 0 && (
         <div className="mt-2 space-y-2">
           {comment.replies.map((reply) => (
-            <Comment key={reply.id} comment={reply} isReply={true} />
+            <Comment key={reply.id} comment={reply} postId={postId} isReply={true} onReplyAdded={onReplyAdded} />
           ))}
         </div>
       )}

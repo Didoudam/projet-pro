@@ -5,6 +5,7 @@ import { Header } from "@/components/Header";
 import { ToastContainer } from "@/components/ToastContainer";
 import { EmailVerificationBanner } from "@/components/EmailVerificationBanner";
 import { MainLayoutWrapper } from "@/components/MainLayoutWrapper";
+import { PrivacyLink } from "@/components/PrivacyLink";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,6 +38,7 @@ export default function RootLayout({
           {children}
         </MainLayoutWrapper>
         <ToastContainer />
+        <PrivacyLink />
       </body>
     </html>
   );

@@ -18,7 +18,7 @@ export function ProfileCard({ user }: ProfileCardProps) {
         <Card>
             <CardContent className="pt-6">
                 <div className="flex flex-col items-center">
-                    {/* Avatar */}
+                    {/* avatar */}
                     <Avatar
                         src={user.image}
                         alt={displayName}
@@ -26,14 +26,14 @@ export function ProfileCard({ user }: ProfileCardProps) {
                         className="mb-4"
                     />
 
-                    {/* Informations */}
+                    {/* infos */}
                     <h2 className="text-2xl font-bold text-foreground mb-1 font-mono uppercase tracking-wide">
                         {displayName}
                     </h2>
 
                     <p className="text-muted-foreground mb-4 font-mono text-sm">{user.email}</p>
 
-                    {/* Badge de vérification */}
+                    {/* badge de verif email */}
                     {user.emailVerified ? (
                         <span className="inline-flex items-center gap-1 px-3 py-1 bg-accent/10 text-accent-foreground border-2 border-accent rounded-none text-sm font-medium font-mono uppercase tracking-wide">
                             ✓ Email vérifié
@@ -45,7 +45,7 @@ export function ProfileCard({ user }: ProfileCardProps) {
                     )}
                 </div>
 
-                {/* Informations supplémentaires */}
+                {/* info sup */}
                 <div className="mt-6 pt-6 border-t-2 border-border space-y-3">
                     {user.firstName && (
                         <div>

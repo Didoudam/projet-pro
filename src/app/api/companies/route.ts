@@ -67,6 +67,16 @@ export async function POST(request: NextRequest) {
             },
         });
 
+        // Créer le WriterLink pour permettre à l'utilisateur de poster au nom de l'entreprise
+        if (company.writer) {
+            await prisma.writerLink.create({
+                data: {
+                    userWriterId: auth.writerId,
+                    companyWriterId: company.writer.id,
+                },
+            });
+        }
+
         return NextResponse.json({ company }, { status: 201 });
     } catch (error) {
         console.log(error);

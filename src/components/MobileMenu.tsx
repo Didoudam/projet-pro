@@ -206,6 +206,18 @@ export function MobileMenu() {
                             Déconnexion
                         </span>
                     </button>
+
+                    {/* Séparateur */}
+                    <div className="h-px bg-border my-4" />
+
+                    {/* Politique de confidentialité */}
+                    <Link
+                        href="/privacy"
+                        onClick={() => setIsOpen(false)}
+                        className="block text-center text-xs text-muted-foreground hover:text-foreground transition-colors font-mono"
+                    >
+                        Politique de confidentialité
+                    </Link>
                 </nav>
             </div>
         </>

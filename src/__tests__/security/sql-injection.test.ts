@@ -41,18 +41,8 @@ describe("Protection contre l'injection SQL", () => {
         ];
 
         it("les payloads d'injection sont traités comme des strings, pas du SQL", () => {
-            // Avec Prisma, ces valeurs sont échappées automatiquement
-            // Elles deviennent de simples chaînes de caractères
-
             for (const payload of sqlInjectionPayloads) {
-                // Prisma convertit l'input en paramètre
-                // Le payload n'est jamais interprété comme du SQL
                 expect(typeof payload).toBe("string");
-
-                // Dans une vraie requête Prisma :
-                // prisma.user.findUnique({ where: { email: payload } })
-                // → SELECT * FROM User WHERE email = $1
-                // → $1 = "'; DROP TABLE users; --" (juste une string)
             }
         });
 

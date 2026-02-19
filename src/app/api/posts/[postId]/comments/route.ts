@@ -84,7 +84,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
 
         const { postId } = await params;
         const body = await request.json();
-        const { content, writerId } = body;
+        const { content, writerId, parentCommentId } = body;
 
         if (!content || typeof content !== 'string' || content.trim().length === 0) {
             return NextResponse.json({ error: "Le contenu du commentaire est requis" }, { status: 400 });
@@ -142,11 +142,23 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
             finalWriterId = writer.id;
         }
 
+        // Si c'est une réponse, vérifier que le commentaire parent existe
+        if (parentCommentId) {
+            const parentComment = await prisma.comment.findUnique({
+                where: { id: parentCommentId },
+            });
+
+            if (!parentComment) {
+                return NextResponse.json({ error: "Commentaire parent non trouvé" }, { status: 404 });
+            }
+        }
+
         // Créer le commentaire
         const comment = await prisma.comment.create({
             data: {
                 content: content.trim(),
-                postId,
+                postId: parentCommentId ? null : postId, // Les réponses n'ont pas de postId direct
+                commentId: parentCommentId || null,
                 writerId: finalWriterId,
             },
             include: {

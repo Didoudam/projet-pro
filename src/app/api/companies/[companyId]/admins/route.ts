@@ -83,6 +83,34 @@ export async function POST(
       },
     });
 
+    // Créer le WriterLink pour permettre au nouvel admin de poster au nom de l'entreprise
+    const userWriter = await prisma.writer.findFirst({
+      where: { userId: user.id },
+    });
+
+    const companyWriter = await prisma.writer.findFirst({
+      where: { companyId },
+    });
+
+    if (userWriter && companyWriter) {
+      // Vérifier si le lien n'existe pas déjà
+      const existingLink = await prisma.writerLink.findFirst({
+        where: {
+          userWriterId: userWriter.id,
+          companyWriterId: companyWriter.id,
+        },
+      });
+
+      if (!existingLink) {
+        await prisma.writerLink.create({
+          data: {
+            userWriterId: userWriter.id,
+            companyWriterId: companyWriter.id,
+          },
+        });
+      }
+    }
+
     return NextResponse.json(newAdmin, { status: 201 });
   } catch (error) {
     console.error("Add admin error:", error);

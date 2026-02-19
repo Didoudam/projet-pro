@@ -48,12 +48,15 @@ export function CommentForm({ postId, onCommentAdded }: CommentFormProps) {
         const response = await fetch(`/api/users/${session.user.id}/writer`);
         if (response.ok) {
           const data = await response.json();
+          console.log("Writers reçus:", data); // DEBUG
           setWriters(data);
           // Sélectionner le writer personnel par défaut
           const personalWriter = data.find((w: Writer) => w.userId === session.user.id);
           if (personalWriter) {
             setSelectedWriterId(personalWriter.id);
           }
+        } else {
+          console.error("Erreur API writers:", response.status, await response.text()); // DEBUG
         }
       } catch (err) {
         console.error("Erreur lors du chargement des writers:", err);
@@ -146,7 +149,7 @@ export function CommentForm({ postId, onCommentAdded }: CommentFormProps) {
                 className="fixed inset-0 z-10"
                 onClick={() => setShowWriterMenu(false)}
               />
-              <div className="absolute top-full left-0 mt-2 bg-card border-2 border-border shadow-lg z-20 min-w-[200px]">
+              <div className="absolute left-0 bg-card border-2 border-border shadow-lg z-20 min-w-[200px]">
                 {writers.map((writer) => {
                   const author = writer.user || writer.company;
                   const displayName = writer.user?.firstName && writer.user?.lastName

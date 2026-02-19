@@ -1,6 +1,5 @@
 "use client";
 
-import { Post as PrismaPost } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import { getRelativeTime } from "@/lib/utils";
@@ -12,70 +11,10 @@ import { useState } from "react";
 import { useSession } from "@/lib/auth-client";
 import { Card, CardContent } from "@/components/ui/Card";
 import { Avatar } from "@/components/ui/Avatar";
-
-type CommentWriter = {
-    id: string;
-    userId: string | null;
-    companyId: string | null;
-    user?: {
-        id: string;
-        name: string;
-        image: string | null;
-        firstName: string | null;
-        lastName: string | null;
-    } | null;
-    company?: {
-        id: string;
-        name: string;
-        image: string | null;
-    } | null;
-};
-
-type CommentType = {
-    id: string;
-    content: string;
-    createdAt: Date;
-    writer: CommentWriter;
-    replies?: CommentType[];
-    Vote?: Vote[];
-};
-
-type Vote = {
-    id: string;
-    status: boolean;
-    writerId: string;
-};
-
-type PostWithAuthor = PrismaPost & {
-    writer: {
-        id: string;
-        userId: string | null;
-        companyId: string | null;
-        user?: {
-            id: string;
-            name: string;
-            image: string | null;
-            firstName: string | null;
-            lastName: string | null;
-        } | null;
-        company?: {
-            id: string;
-            name: string;
-            image: string | null;
-        } | null;
-    };
-    media?: Array<{
-        id: string;
-        url: string;
-        altText: string | null;
-        type: string | null;
-    }>;
-    Comment?: CommentType[];
-    Vote?: Vote[];
-};
+import { Post as PostType, Comment as CommentType } from "@/types/post";
 
 interface PostProps {
-    post: PostWithAuthor;
+    post: PostType;
     className?: string;
 }
 
@@ -229,7 +168,7 @@ export const Post = ({ post, className = "" }: PostProps) => {
                         {comments.length > 0 && (
                             <div className="space-y-2 mb-4">
                                 {comments.map((comment) => (
-                                    <Comment key={comment.id} comment={comment} />
+                                    <Comment key={comment.id} comment={comment} postId={post.id} onReplyAdded={handleCommentAdded} />
                                 ))}
                             </div>
                         )}

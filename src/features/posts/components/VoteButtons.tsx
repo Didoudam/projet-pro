@@ -126,11 +126,11 @@ export function VoteButtons({ postId, commentId, votes }: VoteButtonsProps) {
 	return (
 		<div className='flex items-center gap-2'>
 			{/* Score total */}
-			<span className={`font-mono font-bold text-sm px-2 ${score > 0 ? "text-accent" : score < 0 ? "text-error" : "text-muted-foreground"}`}>
+			<span className={`font-mono font-bold text-sm px-2 ${score > 0 ? "text-success" : score < 0 ? "text-error" : "text-muted-foreground"}`}>
 				{score > 0 ? "+" : ""}
 				{score}
 			</span>
-            
+
 			{/* Bouton Upvote */}
 			<button
 				onClick={() => handleVote(true)}
@@ -140,8 +140,8 @@ export function VoteButtons({ postId, commentId, votes }: VoteButtonsProps) {
                     border-2 transition-all
                     ${
 											userVote === true
-												? "bg-accent/20 text-accent border-accent"
-												: "bg-background text-foreground border-border hover:border-accent hover:text-accent"
+												? "bg-success/20 text-success border-success"
+												: "bg-background text-foreground border-border hover:border-success hover:text-success"
 										}
                     ${isLoading ? "opacity-50 cursor-not-allowed" : ""}
                     active:translate-x-0.5 active:translate-y-0.5
