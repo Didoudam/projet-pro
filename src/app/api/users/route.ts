@@ -55,9 +55,14 @@ export async function POST(request: NextRequest) {
             );
         }
 
+        const { name, image, ...restData } = validatedData;
         const newUser = await prisma.user.create({
             data: {
-                ...validatedData,
+                ...restData,
+                // name est requis dans Prisma, on utilise le prénom + nom si non fourni
+                name: name || `${validatedData.firstName} ${validatedData.lastName}`,
+                // image peut être null
+                image: image ?? null,
                 emailVerified: false,
                 writer: {
                     create: {},

@@ -140,7 +140,7 @@ export function SignUpForm() {
                 type="submit"
                 className="w-full bg-primary text-primary-foreground py-4 px-4 border-2 border-border font-mono uppercase font-bold text-sm hover:shadow-[2px_2px_0px_0px_var(--shadow-color)] active:shadow-none transition-all focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
             >
-                S'inscrire
+                S&apos;inscrire
             </button>
         </form>
     );

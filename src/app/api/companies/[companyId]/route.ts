@@ -119,7 +119,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
         const userAdmin = await prisma.companyAdmin.findFirst({
             where: {
                 companyId,
-                userId: auth.user.id,
+                userId: auth.userId,
                 role: "SUPER_ADMIN",
             },
         });

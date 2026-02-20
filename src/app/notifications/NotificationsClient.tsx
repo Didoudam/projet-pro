@@ -20,7 +20,7 @@ type Activity = {
             image: string | null;
             firstName: string | null;
             lastName: string | null;
-        };
+        } | null;
     };
     content?: string;
     voteStatus?: boolean;
@@ -28,7 +28,7 @@ type Activity = {
 
 type RelationRequest = {
     id: string;
-    createdAt: string;
+    createdAt: string | Date;
     userId: string;
     user: {
         id: string;
@@ -102,10 +102,12 @@ export function NotificationsClient({ activities, requests }: NotificationsClien
                             </div>
                         ) : (
                             activities.map((activity) => {
-                                const displayName =
-                                    activity.writer.user.firstName && activity.writer.user.lastName
-                                        ? `${activity.writer.user.firstName} ${activity.writer.user.lastName}`
-                                        : activity.writer.user.name;
+                                const user = activity.writer.user;
+                                const displayName = user
+                                    ? (user.firstName && user.lastName
+                                        ? `${user.firstName} ${user.lastName}`
+                                        : user.name)
+                                    : "Utilisateur inconnu";
 
                                 return (
                                     <div
@@ -115,12 +117,12 @@ export function NotificationsClient({ activities, requests }: NotificationsClien
                                         <div className="flex items-start gap-4">
                                             {/* Avatar */}
                                             <Link
-                                                href={`/users/${activity.writer.user.id}`}
+                                                href={user ? `/users/${user.id}` : "#"}
                                                 className="w-12 h-12 border-2 border-border bg-muted flex items-center justify-center flex-shrink-0"
                                             >
-                                                {activity.writer.user.image ? (
+                                                {user?.image ? (
                                                     <Image
-                                                        src={activity.writer.user.image}
+                                                        src={user.image}
                                                         alt={displayName}
                                                         width={48}
                                                         height={48}
@@ -137,7 +139,7 @@ export function NotificationsClient({ activities, requests }: NotificationsClien
                                             <div className="flex-1">
                                                 <div className="mb-2">
                                                     <Link
-                                                        href={`/users/${activity.writer.user.id}`}
+                                                        href={user ? `/users/${user.id}` : "#"}
                                                         className="font-bold text-foreground hover:text-primary"
                                                     >
                                                         {displayName}

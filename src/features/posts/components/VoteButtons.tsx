@@ -135,6 +135,7 @@ export function VoteButtons({ postId, commentId, votes }: VoteButtonsProps) {
 			<button
 				onClick={() => handleVote(true)}
 				disabled={isLoading}
+				aria-label="Vote positif"
 				className={`
                     flex items-center gap-1 px-2 py-1 font-mono
                     border-2 transition-all
@@ -153,6 +154,7 @@ export function VoteButtons({ postId, commentId, votes }: VoteButtonsProps) {
 			<button
 				onClick={() => handleVote(false)}
 				disabled={isLoading}
+				aria-label="Vote négatif"
 				className={`
                     flex items-center gap-1 px-2 py-1 font-mono
                     border-2 transition-all

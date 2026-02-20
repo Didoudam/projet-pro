@@ -18,5 +18,5 @@ export type CompanyWithRelations = Company & {
   companyAdmin?: CompanyAdmin[];
   writer?: {
     id: string;
-  };
+  } | null;
 };

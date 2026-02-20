@@ -27,6 +27,7 @@ type UserWithRelations = User & {
 
 interface UserProfileProps {
 	user: UserWithRelations;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	posts: any[];
 }
 
@@ -36,8 +37,8 @@ export function UserProfile({ user, posts }: UserProfileProps) {
 	// Calculer les statistiques
 	const totalPosts = posts.length;
 	const totalComments = posts.reduce((acc, post) => acc + post.Comment.length, 0);
-	const upvotes = posts.reduce((acc, post) => acc + post.Vote.filter((v) => v.status === true).length, 0);
-	const downvotes = posts.reduce((acc, post) => acc + post.Vote.filter((v) => v.status === false).length, 0);
+	const upvotes = posts.reduce((acc, post) => acc + (post.Vote?.filter((v: { status: boolean }) => v.status === true).length ?? 0), 0);
+	const downvotes = posts.reduce((acc, post) => acc + (post.Vote?.filter((v: { status: boolean }) => v.status === false).length ?? 0), 0);
 
 	return (
 		<div className='min-h-screen bg-background pattern-dots p-2 sm:p-4 md:p-6'>

@@ -9,19 +9,23 @@ import { Badge } from "@/components/ui/Badge";
 import { Avatar } from "@/components/ui/Avatar";
 import { Button } from "@/components/ui/Button";
 
-type CompanyWithAdmin = CompanyWithRelations & {
-    companyAdmin?: Array<{
+type AdminWithUser = {
+    id: string;
+    role: string;
+    userId: string;
+    companyId?: string;
+    createdAt?: Date;
+    user?: {
         id: string;
-        role: string;
-        userId: string;
-        user: {
-            id: string;
-            name: string;
-            image: string | null;
-            firstName: string | null;
-            lastName: string | null;
-        };
-    }>;
+        name: string;
+        image: string | null;
+        firstName: string | null;
+        lastName: string | null;
+    };
+};
+
+type CompanyWithAdmin = Omit<CompanyWithRelations, "companyAdmin"> & {
+    companyAdmin?: AdminWithUser[];
 };
 
 interface CompanyProfileProps {
@@ -173,10 +177,11 @@ export function CompanyProfile({ company, posts, isAdmin, currentEmployees = [] 
                                 <CardContent>
                                     <div className="space-y-3">
                                         {admins.map((admin) => {
-                                            const displayName =
-                                                admin.user.firstName && admin.user.lastName
+                                            const displayName = admin.user
+                                                ? (admin.user.firstName && admin.user.lastName
                                                     ? `${admin.user.firstName} ${admin.user.lastName}`
-                                                    : admin.user.name;
+                                                    : admin.user.name)
+                                                : "Utilisateur";
 
                                             return (
                                                 <div
@@ -184,7 +189,7 @@ export function CompanyProfile({ company, posts, isAdmin, currentEmployees = [] 
                                                     className="flex items-center gap-3 p-3 border-2 border-border bg-muted/20"
                                                 >
                                                     <Avatar
-                                                        src={admin.user.image}
+                                                        src={admin.user?.image ?? null}
                                                         alt={displayName}
                                                         size={40}
                                                     />

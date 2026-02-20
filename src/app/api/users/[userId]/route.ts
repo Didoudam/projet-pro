@@ -96,8 +96,9 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
         const body = await request.json();
 
-        // Validation des données
-        const { email, ...validatedData } = await userUpdateSchema.validate(
+        // Validation des données (email extrait mais non modifiable)
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { email: _email, name, ...validatedData } = await userUpdateSchema.validate(
             body,
             {
                 stripUnknown: true,
@@ -110,6 +111,8 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
             },
             data: {
                 ...validatedData,
+                // name ne peut pas être null dans Prisma
+                ...(name !== null && name !== undefined ? { name } : {}),
             },
         });
 

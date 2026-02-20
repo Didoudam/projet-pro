@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { SignUpForm } from "@/features/signUp/components/SignUpForm";
 import { SignInForm } from "@/features/signUp/components/SignInForm";
 
-export default function AuthPage() {
+function AuthContent() {
     const searchParams = useSearchParams();
     const tabParam = searchParams.get("tab");
     const [activeTab, setActiveTab] = useState<"signin" | "signup">("signin");
@@ -77,5 +77,15 @@ export default function AuthPage() {
                 </div>
             </div>
         </div>
+    );
+}
+
+export default function AuthPage() {
+    return (
+        <Suspense fallback={<div className="min-h-screen bg-background pattern-dots flex items-center justify-center p-4">
+            <div className="text-muted-foreground font-mono">Chargement...</div>
+        </div>}>
+            <AuthContent />
+        </Suspense>
     );
 }

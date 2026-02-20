@@ -60,27 +60,39 @@ export function CreateCompanyForm({ onSuccess }: CreateCompanyFormProps) {
     return (
         <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Input
-                    label="Nom de l'entreprise"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    placeholder="Acme Corp"
-                    required
-                />
-                <Input
-                    label="Secteur d'activité"
-                    value={formData.activity}
-                    onChange={(e) => setFormData({ ...formData, activity: e.target.value })}
-                    placeholder="Technologie"
-                />
+                <div>
+                    <label className="block text-sm font-mono uppercase tracking-wider text-foreground mb-2">
+                        Nom de l&apos;entreprise
+                    </label>
+                    <Input
+                        value={formData.name}
+                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                        placeholder="Acme Corp"
+                        required
+                    />
+                </div>
+                <div>
+                    <label className="block text-sm font-mono uppercase tracking-wider text-foreground mb-2">
+                        Secteur d&apos;activité
+                    </label>
+                    <Input
+                        value={formData.activity}
+                        onChange={(e) => setFormData({ ...formData, activity: e.target.value })}
+                        placeholder="Technologie"
+                    />
+                </div>
             </div>
 
-            <Input
-                label="URL de l'image"
-                value={formData.image}
-                onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                placeholder="https://..."
-            />
+            <div>
+                <label className="block text-sm font-mono uppercase tracking-wider text-foreground mb-2">
+                    URL de l&apos;image
+                </label>
+                <Input
+                    value={formData.image}
+                    onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+                    placeholder="https://..."
+                />
+            </div>
 
             <div>
                 <label className="block text-sm font-mono uppercase tracking-wider text-foreground mb-2">

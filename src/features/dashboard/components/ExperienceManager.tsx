@@ -86,34 +86,50 @@ export function ExperienceManager({ experiences: initialExperiences }: Experienc
                 {/* Formulaire d'ajout */}
                 {showForm && (
                     <form onSubmit={handleSubmit} className="space-y-4 mb-4 p-4 border-2 border-border bg-muted/10">
-                        <Input
-                            label="Poste"
-                            value={formData.name}
-                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                            placeholder="Développeur Full Stack"
-                            required
-                        />
-                        <Input
-                            label="Employeur"
-                            value={formData.companyName}
-                            onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
-                            placeholder="Nom de l'entreprise"
-                            required
-                        />
-                        <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <label className="block text-sm font-mono uppercase tracking-wider text-foreground mb-2">
+                                Poste
+                            </label>
                             <Input
-                                label="Date de début"
-                                type="date"
-                                value={formData.startDate}
-                                onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
+                                value={formData.name}
+                                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                placeholder="Développeur Full Stack"
                                 required
                             />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-mono uppercase tracking-wider text-foreground mb-2">
+                                Employeur
+                            </label>
                             <Input
-                                label="Date de fin (optionnel)"
-                                type="date"
-                                value={formData.endDate}
-                                onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
+                                value={formData.companyName}
+                                onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
+                                placeholder="Nom de l&apos;entreprise"
+                                required
                             />
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-mono uppercase tracking-wider text-foreground mb-2">
+                                    Date de début
+                                </label>
+                                <Input
+                                    type="date"
+                                    value={formData.startDate}
+                                    onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
+                                    required
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-mono uppercase tracking-wider text-foreground mb-2">
+                                    Date de fin (optionnel)
+                                </label>
+                                <Input
+                                    type="date"
+                                    value={formData.endDate}
+                                    onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
+                                />
+                            </div>
                         </div>
                         <div>
                             <label className="block text-sm font-mono uppercase tracking-wider text-foreground mb-2">

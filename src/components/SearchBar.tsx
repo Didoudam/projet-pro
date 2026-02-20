@@ -17,7 +17,7 @@ export function SearchBar() {
   const [selectedType, setSelectedType] = useState<"all" | "users" | "companies">("all");
   const searchRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
-  const debounceTimer = useRef<NodeJS.Timeout>();
+  const debounceTimer = useRef<NodeJS.Timeout | undefined>(undefined);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {

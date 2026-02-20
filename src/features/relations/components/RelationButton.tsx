@@ -33,6 +33,7 @@ export function RelationButton({ targetUserId, targetUserName }: RelationButtonP
 
                 // Vérifier si une demande a été envoyée
                 const sentRelation = data.sent.find(
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     (r: any) => r.relationId === targetUserId
                 );
                 if (sentRelation) {
@@ -43,6 +44,7 @@ export function RelationButton({ targetUserId, targetUserName }: RelationButtonP
 
                 // Vérifier si une demande a été reçue
                 const receivedRelation = data.received.find(
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     (r: any) => r.userId === targetUserId
                 );
                 if (receivedRelation) {

@@ -9,6 +9,13 @@ import {
 
 export async function GET(request: NextRequest) {
   try {
+    if (!meiliClient) {
+      return NextResponse.json(
+        { error: "MeiliSearch n'est pas configuré" },
+        { status: 503 }
+      );
+    }
+
     const searchParams = request.nextUrl.searchParams;
     const query = searchParams.get("q");
     const type = searchParams.get("type"); // "users", "companies", "all"

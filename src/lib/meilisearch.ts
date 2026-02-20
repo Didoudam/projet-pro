@@ -1,17 +1,15 @@
 import { MeiliSearch } from "meilisearch";
 
-if (!process.env.MEILISEARCH_HOST) {
-  throw new Error("MEILISEARCH_HOST is not defined");
-}
+const isMeilisearchConfigured =
+  process.env.MEILISEARCH_HOST &&
+  process.env.MEILISEARCH_MASTER_KEY;
 
-if (!process.env.MEILISEARCH_MASTER_KEY) {
-  throw new Error("MEILISEARCH_MASTER_KEY is not defined");
-}
-
-export const meiliClient = new MeiliSearch({
-  host: process.env.MEILISEARCH_HOST,
-  apiKey: process.env.MEILISEARCH_MASTER_KEY,
-});
+export const meiliClient = isMeilisearchConfigured
+  ? new MeiliSearch({
+      host: process.env.MEILISEARCH_HOST!,
+      apiKey: process.env.MEILISEARCH_MASTER_KEY!,
+    })
+  : null;
 
 // Index names
 export const USERS_INDEX = "users";
@@ -19,6 +17,11 @@ export const COMPANIES_INDEX = "companies";
 
 // Initialize indexes with settings
 export async function initializeMeilisearch() {
+  if (!meiliClient) {
+    console.warn("Meilisearch not configured, skipping initialization");
+    return;
+  }
+
   try {
     // Users index
     const usersIndex = meiliClient.index(USERS_INDEX);

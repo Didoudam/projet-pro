@@ -7,7 +7,7 @@ import { Avatar } from "@/components/ui/Avatar";
 
 interface RelationRequest {
     id: string;
-    createdAt: string;
+    createdAt: string | Date;
     userId: string;
     user: {
         id: string;

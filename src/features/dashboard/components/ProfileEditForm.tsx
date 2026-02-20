@@ -173,7 +173,7 @@ export function ProfileEditForm({ user, onCancel }: ProfileEditFormProps) {
                             htmlFor="image"
                             className="block text-sm font-medium text-foreground mb-1 font-mono uppercase tracking-wider"
                         >
-                            URL de l'image de profil
+                            URL de l&apos;image de profil
                         </label>
                         <Input
                             type="url"

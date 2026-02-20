@@ -9,6 +9,11 @@ import {
 
 // Sync all users to Meilisearch
 export async function syncUsersToMeilisearch() {
+  if (!meiliClient) {
+    console.warn("Meilisearch not configured, skipping sync");
+    return 0;
+  }
+
   try {
     const users = await prisma.user.findMany({
       select: {
@@ -64,6 +69,11 @@ export async function syncUsersToMeilisearch() {
 
 // Sync all companies to Meilisearch
 export async function syncCompaniesToMeilisearch() {
+  if (!meiliClient) {
+    console.warn("Meilisearch not configured, skipping sync");
+    return 0;
+  }
+
   try {
     const companies = await prisma.company.findMany({
       select: {
@@ -96,6 +106,11 @@ export async function syncCompaniesToMeilisearch() {
 
 // Sync a single user to Meilisearch
 export async function syncUserToMeilisearch(userId: string) {
+  if (!meiliClient) {
+    console.warn("Meilisearch not configured, skipping sync");
+    return;
+  }
+
   try {
     const user = await prisma.user.findUnique({
       where: { id: userId },
@@ -151,6 +166,11 @@ export async function syncUserToMeilisearch(userId: string) {
 
 // Sync a single company to Meilisearch
 export async function syncCompanyToMeilisearch(companyId: string) {
+  if (!meiliClient) {
+    console.warn("Meilisearch not configured, skipping sync");
+    return;
+  }
+
   try {
     const company = await prisma.company.findUnique({
       where: { id: companyId },
@@ -187,6 +207,11 @@ export async function syncCompanyToMeilisearch(companyId: string) {
 
 // Delete a user from Meilisearch
 export async function deleteUserFromMeilisearch(userId: string) {
+  if (!meiliClient) {
+    console.warn("Meilisearch not configured, skipping delete");
+    return;
+  }
+
   try {
     const index = meiliClient.index(USERS_INDEX);
     await index.deleteDocument(userId);
@@ -199,6 +224,11 @@ export async function deleteUserFromMeilisearch(userId: string) {
 
 // Delete a company from Meilisearch
 export async function deleteCompanyFromMeilisearch(companyId: string) {
+  if (!meiliClient) {
+    console.warn("Meilisearch not configured, skipping delete");
+    return;
+  }
+
   try {
     const index = meiliClient.index(COMPANIES_INDEX);
     await index.deleteDocument(companyId);

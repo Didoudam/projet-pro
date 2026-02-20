@@ -19,7 +19,7 @@ export function EmailVerificationBanner() {
                         <span className="text-primary text-xl font-bold border-2 border-primary w-8 h-8 flex items-center justify-center">{StatsIcons.warning}</span>
                         <div>
                             <p className="text-sm font-bold text-primary font-mono uppercase tracking-wider">
-                                Votre email n'est pas encore vérifié
+                                Votre email n&apos;est pas encore vérifié
                             </p>
                             <p className="text-xs text-foreground font-mono">
                                 Consultez votre boîte mail pour vérifier votre adresse email et accéder à toutes les fonctionnalités.

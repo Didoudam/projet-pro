@@ -62,7 +62,7 @@ export default function AuthPage() {
                 {/* Footer */}
                 <div className="mt-6 text-center">
                     <p className="text-xs text-muted-foreground">
-                        En vous inscrivant, vous acceptez nos <a href="#" className="text-primary underline">conditions d'utilisation</a> et notre <a href="#" className="text-primary underline">politique de confidentialité</a>.
+                        En vous inscrivant, vous acceptez nos <a href="#" className="text-primary underline">conditions d&apos;utilisation</a> et notre <a href="#" className="text-primary underline">politique de confidentialité</a>.
                     </p>
                 </div>
             </div>
